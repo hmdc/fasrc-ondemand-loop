@@ -108,6 +108,9 @@ jobs:
     outputs:
       branch: ${{ steps.name.outputs.branch }}
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Build branch name from versions
         id: name
         run: |
