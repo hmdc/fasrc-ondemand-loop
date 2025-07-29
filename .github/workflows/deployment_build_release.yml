@@ -12,7 +12,6 @@ jobs:
       release_type: ${{ steps.extract.outputs.release_type }}
       tag: ${{ steps.extract.outputs.tag }}
       env: ${{ steps.extract.outputs.env }}
-      branch: ${{ steps.extract.outputs.branch }}
       message: ${{ steps.extract.outputs.message || steps.approval.outputs.message }}
 
     steps:
@@ -64,18 +63,14 @@ jobs:
           
           validate_issue "deployment_build"
           
-          # RELEASE => ALWAYS PRODUCTION
-          BRANCH="iqss_production_${TAG//+/-}"
-          
           set_output "commit_hash" "$SHA"
           set_output "release_type" "$RELEASE_TYPE"
           set_output "env" "production"
           set_output "tag" "$TAG"
-          set_output "branch" "$BRANCH"
           
           # Final validation
-          if [[ -z "$TAG" || -z "$BRANCH" ]]; then
-            set_output "message" "❌ **Tag, and branch are required values**"
+          if [[ -z "$TAG" ]]; then
+            set_output "message" "❌ **Tag, is required value**"
             exit 1
           fi
         env:
@@ -106,18 +101,36 @@ jobs:
       commit_hash: ${{ needs.validate.outputs.commit_hash }}
       release_type: ${{ needs.validate.outputs.release_type }}
 
-  build:
+  branch_name:
+    name: Build branch name
     needs: [ validate, release ]
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.name.outputs.branch }}
+    steps:
+      - name: Build branch name from versions
+        id: name
+        run: |
+          source .github/scripts/utils.sh
+          
+          LOOP_TAG="${{ needs.validate.outputs.tag }}"
+          BUILD_TAG="${{ needs.release.outputs.version}}"
+          # RELEASE => ALWAYS PRODUCTION
+          BRANCH="iqss_production_${BUILD_TAG//+/-}_loop_${LOOP_TAG//+/-}"
+          set_output "branch" "$BRANCH"
+
+  build:
+    needs: [ validate, release, branch_name ]
     uses: ./.github/workflows/build_from_tag.yml
     with:
       commit_hash: ${{ needs.validate.outputs.commit_hash }}
       tag: ${{ needs.validate.outputs.tag }}
       environment: ${{ needs.validate.outputs.env }}
-      branch: ${{ needs.validate.outputs.branch }}
+      branch: ${{ needs.branch_name.outputs.branch }}
 
   comment:
     name: Comment on completion
-    needs: [ validate, release, build ]
+    needs: [ validate, release, branch_name, build ]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -153,7 +166,7 @@ jobs:
             
             **OnDemand Loop Version**: `${{ needs.validate.outputs.tag || 'N/A' }}`
             **Environment**: `${{ needs.validate.outputs.env || 'N/A' }}`
-            **Branch**: [`${{ needs.validate.outputs.branch || 'N/A' }}`](${{ github.server_url }}/${{ github.repository }}/tree/${{ needs.validate.outputs.branch }})
+            **Branch**: [`${{ needs.branch_name.outputs.branch || 'N/A' }}`](${{ github.server_url }}/${{ github.repository }}/tree/${{ needs.branch_name.outputs.branch }})
             **Run**: [View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             
             <!-- build-release: status=${{ needs.build.result }} tag=${{ needs.release.outputs.version }} -->
