@@ -11,6 +11,7 @@ on:
         options:
           - qa
           - production
+          - production_main
 
 permissions:
   contents: read
@@ -40,6 +41,13 @@ jobs:
         run: |
           git checkout production_deployed
           cp -R dv_external_tools ../site/
+          
+      - name: Build for production from main
+        if: ${{ github.event.inputs.environment == 'production_main' }}
+        working-directory: source
+        run: |
+          git checkout origin/main
+          cp -R dv_external_tools ../site/
 
       - name: Build for QA
         if: ${{ github.event.inputs.environment == 'qa' }}
@@ -50,7 +58,7 @@ jobs:
           cp -R dv_external_tools ../site/
 
           # Step 2: head build into /qa
-          git checkout -
+          git checkout origin/main
           cp -R dv_external_tools ../site/qa/
 
       - name: List all files under site/
