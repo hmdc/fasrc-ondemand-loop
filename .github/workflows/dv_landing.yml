@@ -8,13 +8,11 @@ on:
         required: true
         default: 'qa'
         type: choice
-        options:
-          - qa
-          - production
-          - production_main
+        options: [qa, production]
 
 permissions:
   contents: read
+  issues: write
   pages: write
   id-token: write
 
@@ -30,38 +28,95 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: source
-          fetch-depth: 0  # Needed for tag checkout
+          fetch-depth: 0
 
-      - name: Create site folder
-        run: mkdir -p site/qa
+      - name: Create site folders
+        run: |
+          mkdir -p site
+          mkdir -p site/qa
 
-      - name: Build for production
+      # ── PRODUCTION PATH ──────────────────────────────────────────────────────
+      - name: Build production from origin/main
+        id: build_prod
         if: ${{ github.event.inputs.environment == 'production' }}
         working-directory: source
         run: |
-          git checkout production_deployed
-          cp -R dv_external_tools ../site/
-          
-      - name: Build for production from main
-        if: ${{ github.event.inputs.environment == 'production_main' }}
-        working-directory: source
-        run: |
+          set -euo pipefail
+          git fetch --all --tags --prune
           git checkout origin/main
+          DEPLOY_COMMIT=$(git rev-parse HEAD)
+          set_output "sha" "$DEPLOY_COMMIT"
           cp -R dv_external_tools ../site/
 
-      - name: Build for QA
+      - name: Find production-labeled issue (utils)
+        id: prod_issue
+        if: ${{ github.event.inputs.environment == 'production' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/utils.sh
+          REPO="${{ github.repository }}"
+          ISSUE_NUMBER=$(cache_issue_by_label 'production' "$REPO")
+          
+          set_output "number" "$ISSUE_NUMBER"
+
+      - name: Post deployment comment (production)
+        if: ${{ github.event.inputs.environment == 'production' }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.prod_issue.outputs.number }}
+          body: |
+            ✅ **Dataverse Landing deployed to _production_**
+
+            **Commit**: [`Link to Source`](${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.build_prod.outputs.sha }})
+
+            <!-- landing-deploy: commit=${{ steps.build_prod.outputs.sha }} -->
+
+      # ── QA PATH ─────────────────────────────────────────────────────────────
+      - name: QA - Resolve production commit from issue comment (utils)
+        id: resolve_commit
+        if: ${{ github.event.inputs.environment == 'qa' }}
+        working-directory: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/utils.sh
+
+          REPO="${{ github.repository }}"
+          ISSUE_NUMBER=$(cache_issue_by_label 'production' "$REPO")  # finds & caches JSON
+          ISSUE_JSON=$(get_issue_json_path)
+
+          COMMENT=$(jq -r '.comments[].body | select(test("<!-- landing-deploy:"))' "$ISSUE_JSON" | tail -n 1)
+          COMMIT=$(echo "$COMMENT" | grep -oE 'commit=([a-f0-9]{7,40})' | cut -d= -f2)
+
+          if [[ -z "${COMMIT:-}" ]]; then
+            echo "Could not find commit in landing-deploy comment"
+            echo "Comment was: $COMMENT"
+            exit 1
+          fi
+
+          set_output "commit" "$COMMIT"
+
+      - name: QA - Build with production site to compare
         if: ${{ github.event.inputs.environment == 'qa' }}
         working-directory: source
         run: |
-          # Step 1: production build into root
-          git checkout production_deployed
+          set -euo pipefail
+          git fetch --all --tags --prune
+
+          # Root: current production snapshot from recorded commit
+          git checkout ${{ steps.resolve_commit.outputs.commit }}
           cp -R dv_external_tools ../site/
 
-          # Step 2: head build into /qa
+          # /qa: latest main
           git checkout origin/main
           cp -R dv_external_tools ../site/qa/
 
-      - name: List all files under site/
+      # ── COMMON ──────────────────────────────────────────────────────────────
+      - name: List all files for validation
         run: |
           echo "📂 All files under site/:"
           find site -type f

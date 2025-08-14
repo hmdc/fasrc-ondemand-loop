@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set_output() {
   local name="$1"
   local value="$2"
@@ -28,6 +29,45 @@ cache_issue_json() {
   gh issue view "$issue_number" --repo "$repo" --json title,state,assignees,comments,labels > "$cache_file"
 }
 
+# 🔎 Find an issue number by label (most recently updated), prints the number to stdout
+# Usage: find_issue_number_by_label "<repo>" "<label>" ["state"]
+find_issue_number_by_label() {
+  local repo="$1"
+  local label="$2"
+  local state="${3:-all}"
+
+  local number
+  number=$(gh issue list \
+    --repo "$repo" \
+    --label "$label" \
+    --state "$state" \
+    --limit 100 \
+    --json number,updatedAt \
+    --jq 'sort_by(.updatedAt) | reverse | .[0].number')
+
+  if [[ -z "$number" || "$number" == "null" ]]; then
+    return 1
+  fi
+
+  echo "$number"
+}
+
+# 🧊 Convenience: find + cache the issue JSON by label. Prints the number to stdout.
+# Usage: cache_issue_by_label "<label>" "<repo>" ["state"]
+cache_issue_by_label() {
+  local label="$1"
+  local repo="$2"
+  local state="${3:-all}"
+
+  local issue_number
+  if ! issue_number=$(find_issue_number_by_label "$repo" "$label" "$state"); then
+    set_output "message" "❌ **No issue labeled \`$label\` found**"
+    return 1
+  fi
+
+  cache_issue_json "$issue_number" "$repo"
+  echo "$issue_number"
+}
 
 validate_issue() {
   local required_label="${1:-}"  # optional third argument
