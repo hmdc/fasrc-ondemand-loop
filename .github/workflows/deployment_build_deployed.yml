@@ -39,7 +39,7 @@ jobs:
         run: |
           gh issue edit "$ISSUE_NUMBER" \
             --repo "${{ github.repository }}" \
-            --add-label "release_deployed" \
+            --add-label "production_deployed" \
             --add-label "production"
 
       - name: Post confirmation comment
@@ -50,6 +50,6 @@ jobs:
           body: |
             ✅ **Release marked as deployed to production**
 
-            🏷️ Labels applied: `release_deployed`, `production`
+            🏷️ Labels applied: `production_deployed`, `production`
 
             [View this workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})

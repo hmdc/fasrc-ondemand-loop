@@ -48,7 +48,7 @@ Follow the steps below to prepare a deployment build of OnDemand Loop.
       ```
     - This updates the release issue with:
         - A `production_deployed` label
-        - A moving Git tag `production_deployed` pointing to the deployed release
+        - A moving label `production` pointing to the issue that is currently deployed
         - A confirmation comment
 
 6. **Finish up**
