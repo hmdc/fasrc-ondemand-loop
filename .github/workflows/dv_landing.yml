@@ -42,6 +42,8 @@ jobs:
         working-directory: source
         run: |
           set -euo pipefail
+          source .github/scripts/utils.sh
+
           git fetch --all --tags --prune
           git checkout origin/main
           DEPLOY_COMMIT=$(git rev-parse HEAD)
@@ -51,11 +53,13 @@ jobs:
       - name: Find production-labeled issue (utils)
         id: prod_issue
         if: ${{ github.event.inputs.environment == 'production' }}
+        working-directory: source
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           source .github/scripts/utils.sh
+
           REPO="${{ github.repository }}"
           ISSUE_NUMBER=$(cache_issue_by_label 'production' "$REPO")
           
@@ -70,7 +74,7 @@ jobs:
           body: |
             ✅ **Dataverse Landing deployed to _production_**
 
-            **Commit**: [`Link to Source`](${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.build_prod.outputs.sha }})
+            **Commit**: [Link to Source](${{ github.server_url }}/${{ github.repository }}/tree/${{ steps.build_prod.outputs.sha }})
 
             <!-- landing-deploy: commit=${{ steps.build_prod.outputs.sha }} -->
 
