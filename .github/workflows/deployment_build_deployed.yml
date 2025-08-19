@@ -37,6 +37,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          ISSUE_NUMBER="${{ github.event.client_payload.github.payload.issue.number }}"
+
           gh issue edit "$ISSUE_NUMBER" \
             --repo "${{ github.repository }}" \
             --add-label "production_deployed" \
@@ -46,7 +48,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ env.ISSUE_NUMBER }}
+          issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
           body: |
             ✅ **Release marked as deployed to production**
 
