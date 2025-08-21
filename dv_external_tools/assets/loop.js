@@ -16,25 +16,24 @@
         }
     }
 
+    const dataverseUrl = params.get('dataverse_url');
+    const datasetId = params.get('dataset_id');
+
+    if (!dataverseUrl || !datasetId) {
+        // HIDE THE LOOP EXPLORE DATASET LINK
+        document.getElementById('loop_explore').style.display = 'none';
+        return;
+    }
+
+    // HIDE THE LOOP HOMEPAGE LINK
+    document.getElementById('loop_homepage').style.display = 'none';
     const base = loop_urls[env];
     const query = params.toString();
 
-    const continueEl = document.getElementById('continue');
-    if (continueEl) {
-        continueEl.href = base + (query ? '?' + query : '');
-    }
+    document.getElementById('loop_explore').href = base + (query ? '?' + query : '');
 
     // Back to Dataverse link
-    const dataverseUrl = params.get('dataverse_url');
-    const datasetId = params.get('dataset_id');
     const backEl = document.getElementById('back');
-
-    if (backEl) {
-        if (dataverseUrl && datasetId) {
-            const backLink = `${dataverseUrl.replace(/\/$/, '')}/dataset.xhtml?persistentId=${encodeURIComponent(datasetId)}`;
-            backEl.href = backLink;
-        } else {
-            backEl.style.display = 'none';
-        }
-    }
+    const backLink = `${dataverseUrl.replace(/\/$/, '')}/dataset.xhtml?persistentId=${encodeURIComponent(datasetId)}`;
+    backEl.href = backLink;
 })();
