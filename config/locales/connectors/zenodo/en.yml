@@ -1,0 +1,124 @@
+---
+en:
+  connectors:
+    zenodo:
+      title: "Zenodo"
+      aria_label: "Visit the Zenodo project homepage"
+
+      handlers:
+        connector_edit:
+          message_success: "Access token updated: %{name}"
+        deposition_fetch:
+          message_deposition_not_found: "Zenodo deposition not found for record: %{url}"
+          message_success: "Successfully fetched/created deposition: %{name}"
+          message_auth_error: "Authorization error. A valid Zenodo access token is required to fetch/create deposition from this record"
+        deposition_create:
+          message_success: "Dataset created: %{id} > %{title}"
+          message_auth_error: "Authorization error. A valid Zenodo access token is required to create datasets"
+        dataset_select:
+          message_success: "Dataset selected: %{title}"
+        repository_settings_update:
+          message_success: "Repository updated: %{url} type: %{type}"
+        upload_bundle_create:
+          message_record_not_found: "Zenodo record not found: %{url}. Only published records are supported"
+          message_deposition_not_found: "Zenodo deposition not found for record: %{url}"
+          message_success: "Zenodo upload bundle created: %{name}"
+          message_auth_error: "Authorization error. A valid Zenodo access token is required to fetch/create deposition from this record"
+
+      connector_edit_form:
+        field_api_key_label: "Personal Access Token"
+        field_api_key_placeholder: "Enter your personal access token"
+        field_api_key_help: "Provide the access token required to authenticate with the Zenodo server."
+        field_key_scope_label: "Store access token for this upload bundle only"
+        field_key_scope_help: "Leave unchecked to store this access token for all bundles using Zenodo."
+        submit: "Save Changes"
+        cancel: "Cancel"
+      upload_bundle_actions_bar:
+        button_deposition_fetch_label: "Fetch Deposition"
+        button_deposition_fetch_title: "Fetch Zenodo deposition metadata"
+        button_create_draft_title: "Create draft from Record"
+        button_select_create_deposition_title: "Select/Create Dataset"
+        modal_select_create_deposition_title: "Select/Create Zenodo Dataset"
+        button_edit_key_title: "Add/Edit Access Token"
+        modal_edit_key_title: "Add/Edit Zenodo Personal Access Token"
+        missing_key_disabled_features_text: "Add access token to enable deposition features"
+        link_zenodo_title: "Open Zenodo"
+        link_dataset_title: "Open Zenodo dataset: %{name}"
+      upload_bundle_info_bar:
+        link_zenodo_title: "Open Zenodo"
+        link_dataset_title: "Open Zenodo dataset: %{name}"
+
+      deposition_create_form:
+        field_title_label: "Dataset Title"
+        field_title_placeholder: "Enter a descriptive title for the dataset"
+        field_title_help: "Provide a clear and descriptive title to help identify the dataset."
+        field_description_label: "Dataset Description"
+        field_description_placeholder: "Describe the contents and purpose of the dataset"
+        field_description_help: "Include key details about what the dataset contains, how it was collected, and its purpose."
+        field_creators_label: "Creator Names"
+        field_creators_placeholder: "e.g., Smith, John; Doe, Jane"
+        field_creators_help: "Enter creator names separated by semicolons using \"Surname, First name\" format for individuals or full name for organizations."
+        submit: "Create Dataset"
+        cancel: "Cancel"
+
+      dataset_form_tabs:
+        select_dataset: "Select Dataset"
+        create_dataset: "Create Dataset"
+
+      dataset_select_form:
+        search_label: "Filter datasets"
+        search_placeholder: "Type at least 3 characters to filter"
+        total_depositions: "%{total} datasets found"
+        submit: "Select Dataset"
+        cancel: "Cancel"
+
+      shared:
+        zenodo_view_actions:
+          actions_bar_title_a11y_label: "Record actions bar"
+          link_open_record_title: "Open record on Zenodo"
+          button_create_bundle_label: "Create Upload Bundle"
+          button_create_bundle_title: "Create Upload Bundle from this record on the selected project"
+        zenodo_view_info:
+          header_dataset_text: "Dataset"
+          badge_draft_text: "Draft"
+          badge_published_text: "Published"
+          button_toggle_label: "Dataset details"
+          field_publication_date_text: "Publication date:"
+          field_files_text: "Files:"
+        zenodo_view_files:
+          col_file_name_text: "File name"
+          col_size_text: "Size"
+          checkbox_select_all_label: "Select all files"
+          header_dataset_files_a11y_text: "Dataset files"
+          msg_empty_dataset_text: "The dataset does not contain files to download"
+          table_dataset_files_caption: "Dataset files"
+          label_selected_project_text: "Selected project:"
+          input_selected_project_default_value: "➕ A new project will be automatically created"
+          button_open_project_title: "Open selected project details page"
+          button_open_project_label: "Open selected project"
+          button_submit_form_text: "Add Files to Project"
+
+  zenodo:
+    depositions:
+      show:
+        page_title: "OnDemand Loop - Zenodo Deposition"
+    records:
+      show:
+        page_title: "OnDemand Loop - Zenodo Records"
+        caption_files_text: "Zenodo dataset files (%{count})"
+    landing_page:
+      index:
+        page_title: "OnDemand Loop - Zenodo"
+        button_submit_text: "Search"
+        field_search_placeholder: "Query to search in Zenodo records"
+        column_title_text: "Title"
+        label_publication_date_text: "Publication date:"
+        label_files_text: "Files:"
+        paginator_bar_a11y_label: "Search result pagination"
+        paginator_page_text: "page %{page}"
+        table_results_caption: "Search results"
+        msg_no_items_found_text: "No items found."
+  helpers:
+    zenodo:
+      badge_key_missing_text: "Access Token missing"
+      badge_key_present_text: "Access Token present"
