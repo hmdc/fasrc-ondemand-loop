@@ -1,0 +1,73 @@
+<header class="card-header d-flex justify-content-between align-items-center <%= project_header_class(active) %>"
+     data-controller="update-inline-field"
+     data-update-inline-field-initial-value-value="<%= project.name %>"
+     data-update-inline-field-url-value="<%= project_path(id: project.id) %>"
+      data-update-inline-field-error-message-value="<%= t('js.project_name.save.error') %>"
+      data-update-inline-field-field-name-value="name"
+      data-update-inline-field-method-value="PUT">
+  <div class="d-flex align-items-center gap-3 flex-grow-1">
+    <a href="<%= files_app_url(project.download_dir) %>"
+       target="_blank"
+       class="btn btn-sm btn-outline-dark"
+       title="<%= t('.button_open_project_folder_title') %>">
+      <i class="bi bi-folder-fill"></i>
+      <span class="visually-hidden"><%= t('.button_open_project_folder_title') %></span>
+    </a>
+
+    <%= render partial: '/shared/file_row_date', locals: { date: project.creation_date, title: t('.field_creation_date_title') } if project.creation_date %>
+
+    <!-- PROJECT METADATA -->
+    <div data-update-inline-field-target="display" class="d-flex flex-column">
+      <%= link_to project_path(id: project.id), class: "position-relative project-name-link text-reset text-decoration-none rounded-end  ps-1 pe-3" do %>
+        <h2 class="mb-0 h5" data-update-inline-field-target="name"><%= project.name %></h2>
+        <small class="text-muted"><%= project.download_dir %></small>
+      <% end %>
+    </div>
+
+    <div class="flex-grow-1 me-2">
+      <!-- PROJECT ACTIONS -->
+      <%= render partial: 'shared/update_inline_field_form', locals: {
+        aria_label: t('.section_rename_project_label'),
+        save_title: t('.button_save_project_name_title'),
+        cancel_title: t('.button_cancel_title'),
+        input_value: project.name,
+        field_name: 'name'
+      } %>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2" role="group" aria-label="<%= t('.section_project_actions_label') %>">
+    <button class="btn btn-sm btn-outline-dark"
+            data-action="click->update-inline-field#edit"
+            title="<%= t('.button_edit_project_name_title') %>">
+      <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+      <span class="visually-hidden"><%= t('.button_edit_project_name_title') %></span>
+    </button>
+
+    <%= render partial: "shared/button_to", locals: {
+      url: project_path(id: project.id),
+      method: 'DELETE',
+      title: t('.button_delete_project_title'),
+      class: 'btn-sm btn-outline-dark icon-hover-danger',
+      icon: "bi bi-trash-fill",
+      modal_id: 'modal-delete-confirmation',
+      modal_title: t('.modal_delete_confirmation_title'),
+      modal_subtitle: project.name,
+      modal_content: t('.modal_delete_confirmation_content'),
+    } %>
+
+    <% if active %>
+      <button class="btn btn-sm btn-outline-primary cursor-default" title="<%= t('.button_active_project_title') %>">
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        <span class="visually-hidden"><%= t('.button_active_project_title') %></span>
+      </button>
+    <% else %>
+      <%= render partial: "shared/button_to", locals: {
+        url: set_active_project_path(id: project.id),
+        title: t('.button_set_as_active_project_title'),
+        class: 'btn-sm btn-outline-dark',
+        icon: "bi bi-pin-angle-fill"
+      } %>
+    <% end %>
+  </div>
+</header>
