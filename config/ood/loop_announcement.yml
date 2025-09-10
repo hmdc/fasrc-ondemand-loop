@@ -1,0 +1,30 @@
+id: loop_announcement
+type: info
+dismissable: true
+msg: |
+  <h5 class="mb-1"><strong>New: OnDemand Loop (Beta)</strong></h5>
+
+  <p>
+    Streamline your research data workflows with <strong>OnDemand Loop</strong>,
+    a new companion application that simplifies moving data between your HPC environment
+    and remote repositories like <em>Dataverse</em> and <em>Zenodo</em>.
+  </p>
+
+  <p>
+    Upload and download datasets directly from your cluster with an intuitive,
+    user-friendly interface—no complex command-line operations required.<br />
+    Access it anytime from the top menu under <strong><a href="/pun/sys/loop">Files &gt; OnDemand Loop</a></strong>.
+  </p>
+
+  <p class="mt-3">
+    <a href="/pun/sys/loop" class="btn btn-primary mr-4">
+      Open OnDemand Loop
+    </a>
+    <a href="https://iqss.github.io/ondemand-loop/user_guide/" class="btn btn-outline-secondary">
+      Learn More
+    </a>
+  </p>
+
+  <p class="mt-3 mb-0 text-muted">
+    Currently in <strong>Beta</strong> – we welcome your feedback to help us improve!
+  </p>
