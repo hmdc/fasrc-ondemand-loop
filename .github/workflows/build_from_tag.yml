@@ -77,7 +77,7 @@ jobs:
 
       - name: Copy FASRC configuration
         run: |
-          cp -R fasrc_config/config/fasrc/. target
+          rsync -a fasrc_config/config/fasrc/ target/ || true
 
       - name: List contents of target
         run: ls -la target/
