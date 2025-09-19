@@ -34,6 +34,34 @@ This keeps instructions centralized and avoids duplication or drift in the READM
 
 > ℹ️ The issue template is the canonical reference for creating builds. If a process changes, update the template—no README edits required.
 
+## Local Testing
+
+You can test the FASRC configuration locally before deploying to production environments:
+
+```bash
+make local
+```
+
+This command will:
+1. Create a `build/` directory
+2. Clone the [OnDemand Loop repository](https://github.com/IQSS/ondemand-loop) 
+3. Build the application with `make loop_build`
+4. Apply FASRC-specific configuration from `config/fasrc/`
+5. Start the development environment
+
+### Access the Application
+Once running, visit: **https://localhost:33000/pun/sys/loop**
+
+**Test credentials:** `ood` / `ood`
+
+### Options
+- **Default:** Uses OnDemand Loop `main` branch
+- **Release branch/tag:** `make local TAG=loop-branch-name`
+- **Update existing:** `make update` (fetches latest changes)
+
+> ⚠️ **Self-Signed Certificate Warning**  
+> Your browser will show a security warning due to the self-signed SSL certificate. You can safely proceed by accepting the exception.
+
 ## Environment
 
 This repository:
@@ -47,7 +75,7 @@ This repository:
 
 - `.github/workflows/` — Build and deployment automation workflows
 - `.github/scripts/` — Shared utility scripts for workflow logic
-- `config/` — FASRC-specific configuration
+- `config/fasrc` — FASRC-specific configuration
 - `dv_external_tools/` — Static HTML landing page integrated with Harvard Dataverse
 
 ## Requirements
