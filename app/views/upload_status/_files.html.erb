@@ -1,0 +1,71 @@
+<% files ||= [] %>
+<div id="schedule-uploads" class="card">
+  <div class="card-header">
+    <%= render partial: '/shared/files_process_header', locals: { type: 'upload' } %>
+  </div>
+  <div class="card-body bg-light px-0">
+    <div class="container files" role="table">
+      <% files.each_with_index do |data, index| %>
+        <div class="row py-2 align-items-center <%= 'custom-stripe' if index.even? %>" role="row">
+          <div class="col-md-10" role="cell">
+            <div class="d-flex align-items-center">
+              <%= link_to(files_app_url(data.project.download_dir), class: 'btn btn-sm btn-outline-secondary me-2',
+                          title: t('.button_browse_file_title'), target: '_blank') do %>
+                <i class="bi bi-folder" aria-hidden="true"></i>
+                <span class="visually-hidden"><%= t('.button_browse_file_a11y_text', filename: data.file.filename) %></span>
+              <% end %>
+              <%= render partial: '/shared/file_row_date', locals: { date: data.file.creation_date, title: t('.field_creation_date_title'), classes: "mx-2" } %>
+              <span class="me-2"><%= connector_icon(data.upload_bundle.type) %></span>
+                <span class="text-truncate cursor-default" style="max-width: 660px;">
+                <%= link_to project_path(id: data.project.id, anchor: tab_anchor_for(data.upload_bundle)), class: "position-relative project-name-link text-reset text-decoration-none rounded-end" do %>
+                  <span class="" title="<%= t('.field_project_title', name: data.project.name) %>"><%= data.project.name %></span>
+                  <span class="text-muted">&raquo;</span>
+                  <span class="" title="<%= t('.field_bundle_title', name: data.upload_bundle.name) %>"><%= data.upload_bundle.name %></span>
+                  <span class="text-muted position-relative">&gt;</span>
+                  <span class="me-2" title="<%=  t('.field_file_title', filename: data.file.filename) %>"><%= data.file.filename %></span>
+                <% end %>
+              </span>
+              <small class="text-muted file-size"><%= number_to_human_size(data.file.size) %></small>
+            </div>
+          </div>
+
+          <div class="upload-actions col-md-2 text-end d-flex justify-content-end align-items-center" role="cell">
+            <% if data.file.status.uploading? %>
+              <%= render partial: '/shared/progress_bar',
+                         locals: { progress: data.file.connector_status.upload_progress, file: data.file } %>
+            <% else %>
+              <%= button_tag type: 'button',
+                             class: 'btn p-0 border-0 bg-transparent status-badge-button',
+                             title: t('.button_view_events_title'),
+                             data: {
+                               controller: 'modal',
+                               action: 'click->modal#load',
+                               'modal-url-value': widgets_path('events', project_id: data.file.project_id,
+                                                                      entity_type: 'upload_file',
+                                                                      entity_id: data.file.id),
+                               'modal-title-value': t('.button_view_events_title'),
+                               'modal-id-value': 'global-modal'
+                             } do %>
+                <%= status_badge(data.file.status, filename: data.file.filename) %>
+                <span class="visually-hidden"><%= t('.button_view_events_label') %></span>
+              <% end %>
+            <% end %>
+            &nbsp;
+
+            <%= render partial: '/shared/button_to',
+                       locals: {
+                         url: cancel_project_upload_bundle_upload_file_path(project_id: data.file.project_id, upload_bundle_id: data.file.upload_bundle_id, id: data.file.id),
+                         method: :post,
+                         disabled: cancel_button_disabled?(data.file.status),
+                         icon: 'bi bi-sign-stop',
+                         class: 'btn btn-icon-sm btn-outline-dark icon-hover-danger',
+                         title: t('.button_cancel_upload_title', filename: data.file.filename)
+                       } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+
+  </div>
+</div>
