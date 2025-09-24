@@ -7,7 +7,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Project was deleted accidentally
 - **Symptoms**: A user removes a project and worries that associated files are lost. They want to recover downloads or upload history.
-- **Resolution**: Deleting a project only removes its metadata from Loop; downloaded files remain on disk and uploads stay in the remote repository. Create a new project and re-transfer the dataset files as needed.
+- **Resolution**: Deleting a project only removes its metadata from Loop. downloaded files remain on disk and uploads stay in the remote repository. Create a new project and re-transfer the dataset files as needed.
 - **Escalation**: If metadata recovery is required (for example, event history), restore the `.loop_metadata/projects` folder from OOD cluster backup if exists.
 
 ### Rename a project
@@ -15,9 +15,9 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Resolution**: Click the pencil icon next to the project title on the project detail page to rename it instantly.
 
 ### Changing the project folder fails
-- **Symptoms**: A user opens the project workspace in the OnDemand Files app to move or rename folders, but the change fails. Error messages mention permissions or locked files.
-- **Resolution**: Remind the user that Loop opens project folders via the standard OnDemand Files application. Changes must be made there with appropriate filesystem permissions.Ensure the user owns the target directory.
-- **Escalation**: If filesystem permissions look correct, involve the Cannon cluster support team to check quota and directory ACLs.
+- **Symptoms**: A user opens the project workspace in the OnDemand Files app to move or rename folders, but the change fails. Error messages mention permissions or files in progress.
+- **Resolution**: Project folder cannot be updated if there are download files pending or in progress: Wait until all files are transferred. If there are no ongoing files, ensure that the user has write permissions on the target folder and that the folder exists.
+- **Escalation**: If filesystem permissions look correct, involve the OOD cluster support team to check quota and directory ACLs.
 
 ### Beta regression requiring a factory reset
 - **Symptoms**: After upgrading Loop, a user reports that previously working projects show inconsistent metadata, or new downloads/uploads never start. Only some accounts are affected, typically ones that already had Loop metadata from a prior beta build.
