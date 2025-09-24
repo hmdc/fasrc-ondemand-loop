@@ -27,9 +27,9 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 ## Downloads
 
 ### Files are greyed out and cannot be downloaded
-- **Symptoms**: Individual files in a Dataverse dataset appear disabled or grey, and the download button is unavailable. The repository indicates that the files are restricted or under embargo.
-- **Resolution**: Restricted or embargoed files return a `restricted` flag through the Dataverse API, which Loop displays as a disabled entry. Confirm whether the user has permission to access restricted content. If they do, have them add the appropriate API key in **Repository Settings** and reload the dataset. If the repository enforces an embargo date, advise the user that the file will remain inaccessible until the date passes.
-- **Escalation**: Collect the file identifier, repository version, and any API responses if the file should be public but remains disabled.
+- **Symptoms**: Individual files in a Dataverse dataset appear disabled or grey, and the download button is unavailable. The repository indicates that the files are restricted or under embargo or that its size is higher than `max_download_file_size` which is 10 GB by default.
+- **Resolution**: First, check the file size in case this is the reason. Otherwise, the reason is that the file has been restricted of embargoed. Restricted or embargoed files return a `restricted` flag through the Dataverse API, which Loop displays as a disabled entry. Confirm whether the user has permission to access restricted content. If they do, have them add the appropriate API key in **Repository Settings** and reload the dataset. If the repository enforces an embargo date, advise the user that the file will remain inaccessible until the date passes.
+- **Escalation**: `max_download_file_size` can be updated by following the Admin Guide to suport larger files if required. For restricted or embargoed files, collect the file identifier, repository version, and any API responses if the file should be public but remains disabled.
 
 ### Download shows an error status
 - **Symptoms**: A completed download displays an `error` badge even though the transfer appeared to finish. The user is unsure whether the file is usable.
@@ -48,7 +48,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Uploading large files is blocked
 - **Symptoms**: Attempting to stage or upload a file above a certain size immediately fails. Error messages mention exceeding the configured limit.
-- **Resolution**: Loop enforces `max_upload_file_size` for uploads and `max_download_file_size` for downloads. Files above those thresholds are rejected by design. Suggest splitting the data into smaller archives or asking an administrator to raise the configured limit if policy allows. After adjusting the configuration, restart the application so the new limits apply.
+- **Resolution**: Loop enforces `max_upload_file_size` for uploads (1 GB by default) and `max_download_file_size` for downloads (10 GB by default). Files above those thresholds are rejected by design. Suggest splitting the data into smaller archives or asking an administrator to raise the configured limit if policy allows. After adjusting the configuration, restart the application so the new limits apply.
 - **Escalation**: If the file is under the documented limit yet still fails, collect the filename, reported size, and connector logs for debugging.
 
 ## Exploring data
