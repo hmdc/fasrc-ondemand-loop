@@ -38,7 +38,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Downloads fail because storage is full
 - **Symptoms**: New downloads immediately error with filesystem quota or disk space messages. Existing project data fills the workspace.
-- **Resolution**: Downloaded files remain in the project workspace until manually removed. Free disk space by deleting unneeded files via the OnDemand Files app or archive data elsewhere before retrying the download.
+- **Resolution**: Downloaded files remain in the project directory until manually removed. Update the project directory on project creation to point to a lab shared folder to get more disk space as personal space is limited in FASRC cluster. If user still need to use the original directory, free disk space by deleting unneeded files via the OnDemand Files app or archive data elsewhere before retrying the download.
 
 ## Uploads
 
