@@ -79,7 +79,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### DOI or dataset URL does not work in the Explore bar
 - **Symptoms**: Pasting a DOI or dataset URL results in an error banner or no action. The user may be unsure which formats are accepted.
-- **Resolution**: Confirm the identifier matches a supported format (for example, `doi:10.xxxx/xxxx` or a full HTTPS dataset URL). Ensure the repository is supported and accessible from the current environment. If the dataset is draft or private, add the required API key before retrying.
+- **Resolution**: Confirm the identifier matches a supported format (for example, `doi:10.7910/DVN/MYSRMN`, `https://doi.org/10.7910/DVN/MYSRMN`, `doi:10.5281/zenodo.4884775` or `https://doi.org/10.5281/zenodo.4884775`, or a full HTTPS dataset URL). Ensure that this DOI is linked to a supported dataset and that the repository is supported and accessible from the current environment. If the dataset is draft or private, add the required API key before retrying.
 - **Escalation**: Collect the full identifier and any console errors if supported formats still fail.
 
 ### Repository compatibility issues
