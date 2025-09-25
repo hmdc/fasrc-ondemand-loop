@@ -69,12 +69,12 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Where are my downloaded files?
 - **Symptoms**: A user triggered a download but cannot locate the data on disk. They expect Loop to open the correct directory for them.
-- **Resolution**: Open the project detail page and switch to the **Downloads** tab. The header shows the **Download Folder Path** along with a folder icon that opens the project workspace in the Open OnDemand Files app, pointing to the exact filesystem location for that project's downloads.【F:docs/guide/content/user_guide/downloading_files.md†L49-L54】 By default, Loop stores project workspaces under the configured `download_root` (for example, `~/loop_downloads` unless your administrator changed it), so the files will appear in that directory hierarchy.
+- **Resolution**: Open the project detail page and switch to the **Downloads** tab. The header shows the **Download Folder Path** along with a folder icon that opens the project workspace in the Open OnDemand Files app, pointing to the exact filesystem location for that project's downloads. By default, Loop stores project workspaces under the configured `download_root` (for example, `~/loop_downloads` unless your administrator changed it), so the files will appear in that directory hierarchy.
 - **Escalation**: If the path is blank or opens an error, capture the project ID and confirm the `download_root` configuration so operations can verify filesystem permissions.
 
 ### How can I copy or move my downloaded files into my Labs folder?
 - **Symptoms**: After downloading data, the user wants to move it into a shared Labs directory but does not see a move option inside Loop.
-- **Resolution**: Use the folder icon in the project’s **Downloads** tab to launch the Open OnDemand Files application at the project workspace path.【F:docs/guide/content/user_guide/downloading_files.md†L49-L54】 From there, the standard Files interface lets you move or copy the downloaded directories into any location you have access to, including Labs-managed folders.【F:docs/guide/content/user_guide/projects.md†L70-L97】
+- **Resolution**: Use the folder icon in the project’s **Downloads** tab to launch the Open OnDemand Files application at the project workspace path. From there, the standard Files interface lets you move or copy the downloaded directories into any location you have access to, including Labs-managed folders.
 - **Escalation**: If the Files app cannot reach the target Labs directory, confirm the user’s filesystem permissions or involve HPC support for quota and ACL checks.
 
 ### Download shows an error status
@@ -88,7 +88,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### What happens if I download the same file twice?
 - **Symptoms**: Users worry that downloading a file again will overwrite the version already on disk.
-- **Resolution**: Loop automatically renames duplicate downloads by appending a numeric suffix (for example, `_01`, `_02`) so each transfer lands alongside the earlier version without overwriting it.【F:docs/guide/content/user_guide/downloading_files.md†L148-L159】
+- **Resolution**: Loop automatically renames duplicate downloads by appending a numeric suffix (for example, `_01`, `_02`) so each transfer lands alongside the earlier version without overwriting it.
 
 ## Uploads
 
@@ -103,7 +103,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### How do I go back to the remote repository where my files are uploaded?
 - **Symptoms**: After sending files to a dataset, the user wants to verify them on the remote repository but cannot find a direct link from Loop.
-- **Resolution**: Open the project’s upload bundle and use the dataset name or URL in the bundle header to jump directly to the repository page for that dataset.【F:docs/guide/content/user_guide/uploading_files.md†L85-L111】 You can also reopen the dataset from the **Repository Activity** dialog (folder icon next to **Explore**) and choose **Open in Repository** to visit the remote site in a new tab.【F:docs/guide/content/user_guide/finding_data.md†L92-L118】
+- **Resolution**: Open the project’s upload bundle and use the dataset name or URL in the bundle header to jump directly to the repository page for that dataset.You can also reopen the dataset from the **Repository Activity** dialog (folder icon next to **Explore**) and choose **Open in Repository** to visit the remote site in a new tab.
 - **Escalation**: If the link is missing or leads to an error, confirm the dataset URL saved in the upload bundle and coordinate with the repository administrator to ensure the dataset still exists.
 
 ## Exploring data
