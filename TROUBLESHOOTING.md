@@ -20,7 +20,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - [Uploads](#uploads)
   - [Upload shows an error status](#upload-shows-an-error-status)
   - [Uploading large files is blocked](#uploading-large-files-is-blocked)
-  - [How do I go back to the remote repository where my files are uploaded?]    (#how-do-i-go-back-to-the-remote-repository-where-my-files-are-uploaded)
+  - [How do I go back to the remote repository where my files are uploaded?](#how-do-i-go-back-to-the-remote-repository-where-my-files-are-uploaded)
 - [Exploring data](#exploring-data)
   - [Cannot access a draft dataset](#cannot-access-a-draft-dataset)
   - [Need to explore a previous dataset version](#need-to-explore-a-previous-dataset-version)
