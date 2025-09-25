@@ -74,8 +74,8 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### How can I copy or move my downloaded files into my Labs folder?
 - **Symptoms**: After downloading data, the user wants to move it into a shared Labs directory but does not see a move option inside Loop.
-- **Resolution**: Use the folder icon in the project’s **Downloads** tab to launch the Open OnDemand Files application at the project workspace path. From there, the standard Files interface lets you move or copy the downloaded directories into any location you have access to, including Labs-managed folders. Alternatively, user can change the project folder to the Labs directory before downloading the files.
-- **Escalation**: If the Files app cannot reach the target Labs directory, confirm the user’s filesystem permissions or involve HPC support for quota and ACL checks.
+- **Resolution**: Use the **Update project workspace** button on the **Downloads** tab on the project detail view to change the project folder. All files downloaded onto that project will be moved automatically from the previous folder to the new one (Select the Lab folder). To copy files instead of moving them, use the Open OnDemand Files application at the project workspace path, select the files you want to copy, click on Copy/Move, go to the target location and click on the Copy button.
+- **Escalation**: If Loop updata project workspace functionality cannot reach the target Labs directory, confirm the user’s filesystem permissions or disk quotas.
 
 ### Download shows an error status
 - **Symptoms**: A completed download displays an `error` badge even though the transfer appeared to finish. The user is unsure whether the file is usable.
