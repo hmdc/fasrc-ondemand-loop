@@ -3,6 +3,42 @@
 This guide collects the most common troubleshooting questions raised by OnDemand Loop users and maps them to quick triage steps.
 Each section focuses on a specific scenario, summarizing what the user is trying to do, how to unblock them, and when to escalate the issue to the Loop team.
 
+## Index
+
+- [Projects](#projects)
+  - [Project was deleted accidentally](#project-was-deleted-accidentally)
+  - [Rename a project](#rename-a-project)
+  - [Changing the project folder fails](#changing-the-project-folder-fails)
+  - [Beta regression requiring a factory reset](#beta-regression-requiring-a-factory-reset)
+- [Downloads](#downloads)
+  - [Files are greyed out and cannot be downloaded](#files-are-greyed-out-and-cannot-be-downloaded)
+  - [Where are my downloaded files?](#where-are-my-downloaded-files)
+  - [How can I copy or move my downloaded files into my Labs folder?](#how-can-i-copy-or-move-my-downloaded-files-into-my-labs-folder)
+  - [Download shows an error status](#download-shows-an-error-status)
+  - [Downloads fail because storage is full](#downloads-fail-because-storage-is-full)
+  - [What happens if I download the same file twice?](#what-happens-if-i-download-the-same-file-twice)
+- [Uploads](#uploads)
+  - [Upload shows an error status](#upload-shows-an-error-status)
+  - [Uploading large files is blocked](#uploading-large-files-is-blocked)
+  - [How do I go back to the remote repository where my files are uploaded?]    (#how-do-i-go-back-to-the-remote-repository-where-my-files-are-uploaded)
+- [Exploring data](#exploring-data)
+  - [Cannot access a draft dataset](#cannot-access-a-draft-dataset)
+  - [Need to explore a previous dataset version](#need-to-explore-a-previous-dataset-version)
+  - [Quickly reopen frequently accessed datasets](#quickly-reopen-frequently-accessed-datasets)
+  - [Dataset file list stops after the first page](#dataset-file-list-stops-after-the-first-page)
+  - [Dataverse API key authentication fails](#dataverse-api-key-authentication-fails)
+  - [DOI or dataset URL does not work in the Explore bar](#doi-or-dataset-url-does-not-work-in-the-explore-bar)
+  - [Repository compatibility issues](#repository-compatibility-issues)
+- [Accessibility](#accessibility)
+  - [Keyboard navigation and accessibility](#keyboard-navigation-and-accessibility)
+  - [Drag and drop does not work for uploads](#drag-and-drop-does-not-work-for-uploads)
+- [Others](#others)
+  - [Automatic sync is not available](#automatic-sync-is-not-available)
+  - [Critical outage caused by infrastructure or environment](#critical-outage-caused-by-infrastructure-or-environment)
+  - [Restarting a cancelled or failed transfer](#restarting-a-cancelled-or-failed-transfer)
+  - [Transfers never start processing](#transfers-never-start-processing)
+  - [Where are the log files located?](#where-are-the-log-files-located)
+
 ## Projects
 
 ### Project was deleted accidentally
@@ -26,10 +62,20 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ## Downloads
 
-### Files are disabled in grey and cannot be downloaded
+### Files are greyed out and cannot be downloaded
 - **Symptoms**: Individual files in a Dataverse dataset appear disabled or grey, and the download button is unavailable. The repository indicates that the files are restricted or under embargo or that its size is higher than `max_download_file_size` which is 10 GB by default.
-- **Resolution**: First, check the file size in case this is the reason. Otherwise, the reason is that the file has been restricted of embargoed. Restricted or embargoed files return a `restricted` flag through the Dataverse API, which Loop displays as a disabled entry. Confirm whether the user has permission to access restricted content. If they do, have them add the appropriate API key in **Repository Settings** and reload the dataset. If the repository enforces an embargo date, advise the user that the file will remain inaccessible until the date passes.
+- **Resolution**: Let the user hover the mouse pointer over the information icon to get the validation message. Check the file size in case this is the reason. Otherwise, the reason is that the file has been restricted of embargoed. Restricted or embargoed files return a `restricted` flag through the Dataverse API, which Loop displays as a disabled entry. Confirm whether the user has permission to access restricted content. If they do, have them add the appropriate API key in **Repository Settings** and reload the dataset. If the repository enforces an embargo date, advise the user that the file will remain inaccessible until the date passes.
 - **Escalation**: `max_download_file_size` can be updated by following the Admin Guide to suport larger files if required. For restricted or embargoed files, collect the file identifier, repository version, and any API responses if the file should be public but remains disabled.
+
+### Where are my downloaded files?
+- **Symptoms**: A user triggered a download but cannot locate the data on disk. They expect Loop to open the correct directory for them.
+- **Resolution**: Open the project detail page and switch to the **Downloads** tab. The header shows the **Download Folder Path** along with a folder icon that opens the project workspace in the Open OnDemand Files app, pointing to the exact filesystem location for that project's downloads.【F:docs/guide/content/user_guide/downloading_files.md†L49-L54】 By default, Loop stores project workspaces under the configured `download_root` (for example, `~/loop_downloads` unless your administrator changed it), so the files will appear in that directory hierarchy.
+- **Escalation**: If the path is blank or opens an error, capture the project ID and confirm the `download_root` configuration so operations can verify filesystem permissions.
+
+### How can I copy or move my downloaded files into my Labs folder?
+- **Symptoms**: After downloading data, the user wants to move it into a shared Labs directory but does not see a move option inside Loop.
+- **Resolution**: Use the folder icon in the project’s **Downloads** tab to launch the Open OnDemand Files application at the project workspace path.【F:docs/guide/content/user_guide/downloading_files.md†L49-L54】 From there, the standard Files interface lets you move or copy the downloaded directories into any location you have access to, including Labs-managed folders.【F:docs/guide/content/user_guide/projects.md†L70-L97】
+- **Escalation**: If the Files app cannot reach the target Labs directory, confirm the user’s filesystem permissions or involve HPC support for quota and ACL checks.
 
 ### Download shows an error status
 - **Symptoms**: A completed download displays an `error` badge even though the transfer appeared to finish. The user is unsure whether the file is usable.
@@ -39,6 +85,10 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 ### Downloads fail because storage is full
 - **Symptoms**: New downloads immediately error with filesystem quota or disk space messages. Existing project data fills the workspace.
 - **Resolution**: Downloaded files remain in the project directory until manually removed. Update the project directory to point to a lab shared folder to get more disk space as personal space is limited in FASRC cluster. If user still need to use the original directory, free disk space by deleting unneeded files via the OnDemand Files app or archive data elsewhere before retrying the download.
+
+### What happens if I download the same file twice?
+- **Symptoms**: Users worry that downloading a file again will overwrite the version already on disk.
+- **Resolution**: Loop automatically renames duplicate downloads by appending a numeric suffix (for example, `_01`, `_02`) so each transfer lands alongside the earlier version without overwriting it.【F:docs/guide/content/user_guide/downloading_files.md†L148-L159】
 
 ## Uploads
 
@@ -50,6 +100,11 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Symptoms**: Attempting to stage or upload a file above a certain size immediately fails. Error messages mention exceeding the configured limit.
 - **Resolution**: Loop enforces `max_upload_file_size` for uploads (1 GB by default) and `max_download_file_size` for downloads (10 GB by default). Files above those thresholds are rejected by design. Suggest splitting the data into smaller archives or asking an administrator to raise the configured limit if policy allows. After adjusting the configuration, restart the application so the new limits apply.
 - **Escalation**: If the file is under the documented limit yet still fails, collect the filename, reported size, and connector logs for debugging.
+
+### How do I go back to the remote repository where my files are uploaded?
+- **Symptoms**: After sending files to a dataset, the user wants to verify them on the remote repository but cannot find a direct link from Loop.
+- **Resolution**: Open the project’s upload bundle and use the dataset name or URL in the bundle header to jump directly to the repository page for that dataset.【F:docs/guide/content/user_guide/uploading_files.md†L85-L111】 You can also reopen the dataset from the **Repository Activity** dialog (folder icon next to **Explore**) and choose **Open in Repository** to visit the remote site in a new tab.【F:docs/guide/content/user_guide/finding_data.md†L92-L118】
+- **Escalation**: If the link is missing or leads to an error, confirm the dataset URL saved in the upload bundle and coordinate with the repository administrator to ensure the dataset still exists.
 
 ## Exploring data
 
@@ -112,5 +167,10 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Resolution**: Loop does not automatically retry failed transfers. User needs to click on the **Retry** button on the file row. Alternatively, you can start another download or upload to repeat the process. Review the **Events** log on the file to understand the failure reason before retrying.
 
 ### Transfers never start processing
-- **Symptoms**: Files stay in `pending` state and the progress bar never appears. The header on the Downloads or Uploads page shows a paused status.
+- **Symptoms**: Files stay in `pending  ` state and the progress bar never appears. The header on the Downloads or Uploads page shows a paused status.
 - **Resolution**: Check the **Job Status** icon on the left of the global Downloads or Uploads pages. A pause icon indicates that no background worker is running. If paused, an administrator should restart the Loop application or background job service so transfers can resume. Verify that the metadata and download directories are writable. Check the lock file `~/.loop_metadata/detached.process.lock` which is necesary to only run a transfer process (The lock file location is described in the Admin Guide with the env variable `OOD_LOOP_DETACHED_PROCESS_FILE`). Try to delete that file to see if the transfer process starts again.
+
+### Where are the log files located?
+- **Symptoms**: Support staff need to inspect Loop logs but are unsure where the application writes them for a given user.
+- **Resolution**: Each user has a `.loop_metadata` directory (configured via `metadata_root`, `~/.loop_metadata` by default) that holds Loop’s internal state as well as log outputs such as `launch_detached_process.log`. Access the project metadata folder from the project detail page to open this directory in the Files app when you need to review logs.
+- **Escalation**: If the metadata directory is missing or unreadable, restore it from backup or involve operations to re-create the configured path with the correct permissions.
