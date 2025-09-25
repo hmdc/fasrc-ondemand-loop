@@ -25,7 +25,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [Cannot access a draft dataset](#cannot-access-a-draft-dataset)
   - [Need to explore a previous dataset version](#need-to-explore-a-previous-dataset-version)
   - [Quickly reopen frequently accessed datasets](#quickly-reopen-frequently-accessed-datasets)
-  - [Dataset file list stops after the first page](#dataset-file-list-stops-after-the-first-page)
+  - [User doesn't know how to see all files on a dataset](#user-doesnt-know-how-to-see-all-files-on-a-dataset)
   - [Dataverse API key authentication fails](#dataverse-api-key-authentication-fails)
   - [DOI or dataset URL does not work in the Explore bar](#doi-or-dataset-url-does-not-work-in-the-explore-bar)
   - [Repository compatibility issues](#repository-compatibility-issues)
@@ -103,7 +103,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### How do I go back to the remote repository where my files are uploaded?
 - **Symptoms**: After sending files to a dataset, the user wants to verify them on the remote repository but cannot find a direct link from Loop.
-- **Resolution**: Open the project’s upload bundle and use the dataset name or URL in the bundle header to jump directly to the repository page for that dataset. You can also reopen the dataset from the **Repository Activity** dialog (folder icon next to **Explore**) and choose **Open Repository in website** to visit the remote site in a new tab.
+- **Resolution**: Open the project’s upload bundle. There you will see some links to the Dataverse installation, the collection containing the dataset and the target dataset. By clicking on any of these links you can go to the remote resource where the files are uploaded. The kind of links will be slightly different for Zenodo datasets, but with the same purpose. 
 - **Escalation**: If the link is missing or leads to an error, confirm the dataset URL saved in the upload bundle and coordinate with the repository administrator to ensure the dataset still exists.
 
 ## Exploring data
@@ -111,7 +111,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 ### Cannot access a draft dataset
 - **Symptoms**: A user reports that a Dataverse or Zenodo dataset loads without any files or metadata when they know a draft exists. The interface may show a warning about restricted content, or the dataset listing remains empty.
 - **Resolution**: Confirm that the dataset version is `draft`. Draft versions require credentials even if the published dataset is public. Ask the user to open **Repositories → Settings** and add a valid API token for the affected repository. Tokens saved there automatically apply to browsing and downloads. After saving the key, have the user reload the dataset from the **Explore** bar. The draft files should now appear.
-- **Escalation**: If a valid API key is present but the draft still fails to load, capture the repository version and escalate as a connector bug.
+- **Escalation**: If a valid API key is present but the draft still fails to load, capture the repository version and escalate as a connector bug. Ensure that the user associated to that API key has permissions to explore that dataset. 
 
 ### Need to explore a previous dataset version
 - **Symptoms**: A user wants to review an earlier snapshot of a dataset but Loop only shows the latest content. They may not realize that Dataverse exposes version controls inside Loop.
@@ -122,19 +122,19 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Symptoms**: The user repeatedly searches for the same dataset even though they recently explored it in Loop. They are unaware of a shortcut to reopen the dataset directly.
 - **Resolution**: Point them to the folder icon next to the **Explore** bar in the application header. Clicking it opens the **Repository Activity** dialog, which lists recently browsed datasets and collections. From the list, choose **Explore** to relaunch the dataset instantly or **Open Repository in website** to jump back to the remote site.
 
-### Dataset file list stops after the first page
+### User doesn't know how to see all files on a dataset
 - **Symptoms**: Only the first batch of files is displayed when viewing a large dataset. Pagination controls show that more files exist, but the user is unsure how to load them.
 - **Resolution**: Explain that Loop paginates large file listings based on the configured default page size (20 items by default). Use the pagination controls in the file browser to load additional pages of files. For installations that regularly handle very large datasets, administrators can raise `default_pagination_items` so more files appear per page.
 - **Escalation**: If no pagination controls appear, gather the dataset identifier and repository version and escalate as a connector defect.
 
 ### Dataverse API key authentication fails
 - **Symptoms**: Users receive repeated authentication prompts or error banners when adding a Dataverse API token. Draft datasets and private files remain inaccessible even after entering a key.
-- **Resolution**: Confirm that the token was copied without leading or trailing spaces and that it has not expired on the Dataverse server. Instruct the user to edit the repository entry under **Repositories → Settings** and re-enter the token, ensuring it is saved for future sessions.
+- **Resolution**: Confirm that the token was copied without leading or trailing spaces and that it has not expired on the Dataverse server. Instruct the user to edit the repository entry under **Repositories → Settings** and re-enter the token, ensuring it is saved for future sessions. Ensure that the API key has rights to access the dataset they want to explore. 
 - **Escalation**: Capture the Dataverse version and error message for engineering review if authentication still fails against a supported release.
 
 ### DOI or dataset URL does not work in the Explore bar
 - **Symptoms**: Pasting a DOI or dataset URL results in an error banner or no action. The user may be unsure which formats are accepted.
-- **Resolution**: Confirm the identifier matches a supported format (for example, `doi:10.7910/DVN/MYSRMN`, `https://doi.org/10.7910/DVN/MYSRMN`, `doi:10.5281/zenodo.4884775`, `https://doi.org/10.5281/zenodo.4884775`, or a full HTTPS dataset URL like `https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FMYSRMN&version=1.0`). Ensure that this DOI is linked to a supported dataset and that the repository is supported and accessible from the current environment. If the dataset is draft or private, add the required API key before retrying.
+- **Resolution**: Confirm the identifier matches a supported format (for example, `doi:10.7910/DVN/MYSRMN`, `https://doi.org/10.7910/DVN/MYSRMN`, `doi:10.5281/zenodo.4884775`, `https://doi.org/10.5281/zenodo.4884775`, or a full HTTPS dataset URL like `https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FMYSRMN&version=1.0`). Ensure that this DOI is linked to a supported dataset and that the repository is supported and accessible from the current environment. You can check that the DOI is linked to a valid repository on the section **Try resolving a DOI name** of `https://www.doi.org` website. If the dataset is draft, ensure you add the required API key before retrying.
 - **Escalation**: Collect the full identifier and any console errors if supported formats still fail.
 
 ### Repository compatibility issues
