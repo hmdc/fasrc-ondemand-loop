@@ -53,7 +53,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 ### Changing the project folder fails
 - **Symptoms**: A user tries to update the project folder in Loop, but the change fails. Error messages mention permissions or files in progress.
 - **Resolution**: Project folder cannot be updated if there are download files pending or in progress: Wait until all files are transferred. If there are no ongoing files, ensure that the user has write permissions on the target folder and that the folder exists.
-- **Escalation**: If filesystem permissions look correct, involve the OOD cluster support team to check quota and directory ACLs.
+- **Escalation**: If filesystem permissions look correct, check quotas and directory ACLs on that disk partition.
 
 ### Beta regression requiring a factory reset
 - **Symptoms**: After upgrading Loop, a user reports that previously working projects show inconsistent metadata, or new downloads/uploads never start. Only some accounts are affected, typically ones that already had Loop metadata from a prior beta build.
@@ -69,12 +69,12 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Where are my downloaded files?
 - **Symptoms**: A user triggered a download but cannot locate the data on disk. They expect Loop to open the correct directory for them.
-- **Resolution**: Open the project detail page and switch to the **Downloads** tab. The header shows the **Download Folder Path** along with a folder icon that opens the project workspace in the Open OnDemand Files app, pointing to the exact filesystem location for that project's downloads. By default, Loop stores project workspaces under the configured `download_root` (for example, `~/loop_downloads` unless your administrator changed it), so the files will appear in that directory hierarchy.
+- **Resolution**: Open the project detail page and switch to the **Downloads** tab. The header shows the **Open Project Workspace Folder** along with a folder icon that opens the project workspace in the Open OnDemand Files app, pointing to the exact filesystem location for that project's downloads. By default, Loop stores project workspaces under the configured `download_root` (for example, `~/loop_downloads` unless your administrator changed it), so the files will appear in that directory hierarchy.
 - **Escalation**: If the path is blank or opens an error, capture the project ID and confirm the `download_root` configuration so operations can verify filesystem permissions.
 
 ### How can I copy or move my downloaded files into my Labs folder?
 - **Symptoms**: After downloading data, the user wants to move it into a shared Labs directory but does not see a move option inside Loop.
-- **Resolution**: Use the folder icon in the project’s **Downloads** tab to launch the Open OnDemand Files application at the project workspace path. From there, the standard Files interface lets you move or copy the downloaded directories into any location you have access to, including Labs-managed folders.
+- **Resolution**: Use the folder icon in the project’s **Downloads** tab to launch the Open OnDemand Files application at the project workspace path. From there, the standard Files interface lets you move or copy the downloaded directories into any location you have access to, including Labs-managed folders. Alternatively, user can change the project folder to the Labs directory before downloading the files.
 - **Escalation**: If the Files app cannot reach the target Labs directory, confirm the user’s filesystem permissions or involve HPC support for quota and ACL checks.
 
 ### Download shows an error status
@@ -103,7 +103,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### How do I go back to the remote repository where my files are uploaded?
 - **Symptoms**: After sending files to a dataset, the user wants to verify them on the remote repository but cannot find a direct link from Loop.
-- **Resolution**: Open the project’s upload bundle and use the dataset name or URL in the bundle header to jump directly to the repository page for that dataset.You can also reopen the dataset from the **Repository Activity** dialog (folder icon next to **Explore**) and choose **Open in Repository** to visit the remote site in a new tab.
+- **Resolution**: Open the project’s upload bundle and use the dataset name or URL in the bundle header to jump directly to the repository page for that dataset. You can also reopen the dataset from the **Repository Activity** dialog (folder icon next to **Explore**) and choose **Open Repository in website** to visit the remote site in a new tab.
 - **Escalation**: If the link is missing or leads to an error, confirm the dataset URL saved in the upload bundle and coordinate with the repository administrator to ensure the dataset still exists.
 
 ## Exploring data
@@ -115,12 +115,12 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Need to explore a previous dataset version
 - **Symptoms**: A user wants to review an earlier snapshot of a dataset but Loop only shows the latest content. They may not realize that Dataverse exposes version controls inside Loop.
-- **Resolution**: Load the dataset via the **Explore** workflow. Use the dataset version selector in the sidebar to choose a published version or the current draft when available. Selecting a different version refreshes the metadata and file listing so the user can download historical files. Please note that Loop will only display the last 10 versions ih the version selector but all versions can be explored in the Explore bar.
+- **Resolution**: Load the dataset via the **Explore** workflow. Use the dataset version selector in the sidebar to choose a published version or the current draft when available. Selecting a different version refreshes the metadata and file listing so the user can download historical files. Please note that Loop will only display the last 10 versions in the version selector but all versions can be explored in the Explore bar.
 - **Escalation**: If version options are missing entirely, verify the repository version and report incompatibilities to the Loop team.
 
 ### Quickly reopen frequently accessed datasets
 - **Symptoms**: The user repeatedly searches for the same dataset even though they recently explored it in Loop. They are unaware of a shortcut to reopen the dataset directly.
-- **Resolution**: Point them to the folder icon next to the **Explore** bar in the application header. Clicking it opens the **Repository Activity** dialog, which lists recently browsed datasets and collections. From the list, choose **Explore** to relaunch the dataset instantly or **Open in Repository** to jump back to the remote site.
+- **Resolution**: Point them to the folder icon next to the **Explore** bar in the application header. Clicking it opens the **Repository Activity** dialog, which lists recently browsed datasets and collections. From the list, choose **Explore** to relaunch the dataset instantly or **Open Repository in website** to jump back to the remote site.
 
 ### Dataset file list stops after the first page
 - **Symptoms**: Only the first batch of files is displayed when viewing a large dataset. Pagination controls show that more files exist, but the user is unsure how to load them.
@@ -172,5 +172,4 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Where are the log files located?
 - **Symptoms**: Support staff need to inspect Loop logs but are unsure where the application writes them for a given user.
-- **Resolution**: Each user has a `.loop_metadata` directory (configured via `metadata_root`, `~/.loop_metadata` by default) that holds Loop’s internal state as well as log outputs such as `launch_detached_process.log`. Access the project metadata folder from the project detail page to open this directory in the Files app when you need to review logs.
-- **Escalation**: If the metadata directory is missing or unreadable, restore it from backup or involve operations to re-create the configured path with the correct permissions.
+- **Resolution**: Each user has a metadata directory (configured via `metadata_root`, `~/.loop_metadata` by default) that holds Loop’s internal state as well as log outputs of `launch_detached_process.log`. Access the project metadata folder from the project detail page to open this directory in the Files app when you need to review the content.
