@@ -55,7 +55,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 
 ### Update the project folder to a Labs share
 - **Symptoms**: The user wants new downloads to land inside a Labs-managed share instead of their default `~/loop_downloads` project workspace.
-- **Resolution**: Open the project detail page and press the pencil button in the **Download Files** header to choose a different workspace folder. Use the file browser to navigate into the Labs share and select (or create) the target directory; Loop immediately updates the project to use that path for all future downloads. Existing files are moved from the original location automatically.
+- **Resolution**: Open the project detail page and press the pencil button in the **Download Files** header to choose a different workspace folder. Use the file browser to navigate into the Labs share and select (or create) the target directory; Loop immediately updates the project to use that path for all future downloads. Existing downloaded files are moved from the original location to the new folder automatically.
 - **Escalation**: If the Labs share cannot be selected, confirm the user has write permissions through the Open OnDemand Files application or involve the HPC storage team to adjust ACLs.
 
 ### Changing the project folder fails
