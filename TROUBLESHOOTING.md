@@ -14,6 +14,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [Files are greyed out and cannot be downloaded](#files-are-greyed-out-and-cannot-be-downloaded)
   - [Where are my downloaded files?](#where-are-my-downloaded-files)
   - [How can I copy or move my downloaded files into my Labs folder?](#how-can-i-copy-or-move-my-downloaded-files-into-my-labs-folder)
+  - [Download is stuck in the Downloading state](#download-is-stuck-in-the-downloading-state)
   - [Download shows an error status](#download-shows-an-error-status)
   - [Downloads fail because storage is full](#downloads-fail-because-storage-is-full)
   - [What happens if I download the same file twice?](#what-happens-if-i-download-the-same-file-twice)
@@ -27,6 +28,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [Quickly reopen frequently accessed datasets](#quickly-reopen-frequently-accessed-datasets)
   - [User doesn't know how to see all files on a dataset](#user-doesnt-know-how-to-see-all-files-on-a-dataset)
   - [Dataverse API key authentication fails](#dataverse-api-key-authentication-fails)
+  - [Update or delete a saved repository API key](#update-or-delete-a-saved-repository-api-key)
   - [DOI or dataset URL does not work in the Explore bar](#doi-or-dataset-url-does-not-work-in-the-explore-bar)
   - [Repository compatibility issues](#repository-compatibility-issues)
 - [Accessibility](#accessibility)
@@ -76,6 +78,12 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Symptoms**: After downloading data, the user wants to move it into a shared Labs directory but does not see a move option inside Loop.
 - **Resolution**: Use the **Update project workspace** button on the **Downloads** tab on the project detail view to change the project folder. All files downloaded onto that project will be moved automatically from the previous folder to the new one (Select the Lab folder). To copy files instead of moving them, use the Open OnDemand Files application at the project workspace path, select the files you want to copy, click on Copy/Move, go to the target location and click on the Copy button.
 - **Escalation**: If Loop updata project workspace functionality cannot reach the target Labs directory, confirm the user’s filesystem permissions or disk quotas.
+
+### Download is stuck in the Downloading state
+- **Symptoms**: A transfer shows `Downloading` indefinitely, even after refreshing the page or restarting the detached process. Subsequent restarts do not resume the file, but the queue counter still reports an in-progress item.
+- **Resolution**: This could happen if the detached process aborts or the servers is shutdown while a file is being downloaded. On the next detached process start-up, it will ignore the files in downloading state.This is why we logged the zombie files in the DownloadService/UploadService. 
+Open the project metadata folder from the project detail page and inspect the `download_files` manifests inside `.loop_metadata/projects/<project>/` to locate the stuck entry. Delete the stale manifest or edit it to set the status back to `pending`, then re-stage the file from the dataset so it re-enters the queue. After cleaning up, restart the detached process so the worker sees the refreshed queue.
+- **Escalation**: If zombie entries continue to appear after cleanup, collect the `launch_detached_process.log` and the stuck manifest file so engineering can confirm why the worker aborted mid-transfer.
 
 ### Download shows an error status
 - **Symptoms**: A completed download displays an `error` badge even though the transfer appeared to finish. The user is unsure whether the file is usable.
@@ -131,6 +139,11 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Symptoms**: Users receive repeated authentication prompts or error banners when adding a Dataverse API token. Draft datasets and private files remain inaccessible even after entering a key.
 - **Resolution**: Confirm that the token was copied without leading or trailing spaces and that it has not expired on the Dataverse server. Instruct the user to edit the repository entry under **Repositories → Settings** and re-enter the token, ensuring it is saved for future sessions. Ensure that the API key has rights to access the dataset they want to explore. 
 - **Escalation**: Capture the Dataverse version and error message for engineering review if authentication still fails against a supported release.
+
+### Update or delete a saved repository API key
+- **Symptoms**: A user needs to rotate credentials or remove repository access after leaving a project but cannot find where saved API keys live.
+- **Resolution**: Open **Repositories → Settings** to view every repository Loop has cached. From this page you can edit the existing API key value or delete the entire repository entry, which clears the stored credential and any connector-specific settings. Updating the key takes effect immediately—no restart is required. Take into account that Upload Bundles can optionally store API keys local to the bundle instead of globally, so, it is advised to review all related Upload Bundles after updating/removing the global API key for that repository, in case they need to be updated/deleted too to maintain consistency.
+- **Escalation**: If the UI refuses to save changes, capture a screenshot and collect the user’s `~/.loop_metadata/repos/repo_db.yml` file so engineering can validate the stored credentials format before filing a bug.
 
 ### DOI or dataset URL does not work in the Explore bar
 - **Symptoms**: Pasting a DOI or dataset URL results in an error banner or no action. The user may be unsure which formats are accepted.
