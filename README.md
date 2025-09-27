@@ -39,7 +39,7 @@ This keeps instructions centralized and avoids duplication or drift in the READM
 You can test the FASRC configuration locally before deploying to production environments:
 
 ```bash
-make local
+make dev_up
 ```
 
 This command will:
@@ -56,7 +56,7 @@ Once running, visit: **https://localhost:33000/pun/sys/loop**
 
 ### Options
 - **Default:** Uses OnDemand Loop `main` branch
-- **Release branch/tag:** `make local TAG=loop-branch-name`
+- **Release branch/tag:** `make dev_up TAG=loop-branch-name`
 - **Update existing:** `make update` (fetches latest changes)
 
 > ⚠️ **Self-Signed Certificate Warning**  

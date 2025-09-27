@@ -4,7 +4,7 @@ TAG ?= main
 BUILD_DIR := build
 SRC_DIR := $(BUILD_DIR)/ondemand-loop
 
-.PHONY: all version release_notes local clone update loop_build dev_up
+.PHONY: all version release_notes dev_up update loop_build clean
 
 all:: version
 
@@ -14,7 +14,7 @@ version:
 release_notes:
 	./scripts/release_notes.sh
 
-local: $(SRC_DIR) loop_build copy_config loop_up
+dev_up: $(SRC_DIR) loop_build copy_config loop_up
 
 # Clone the repository only if the target directory does not exist.
 # This makes the rule idempotent: running `make` again will do nothing
@@ -35,3 +35,7 @@ copy_config:
 
 loop_up:
 	cd $(SRC_DIR) && make loop_up
+
+clean:
+	rm -rf ./build
+
