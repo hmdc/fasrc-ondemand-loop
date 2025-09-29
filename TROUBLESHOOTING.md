@@ -191,4 +191,4 @@ Open the project metadata folder from the project detail page and inspect the `d
 
 ### Where are the log files located?
 - **Symptoms**: Support staff need to inspect Loop logs but are unsure where the application writes them for a given user.
-- **Resolution**: Each user has a metadata directory (configured via `metadata_root`, `~/.loop_metadata` by default) that holds Loop’s internal state as well as log outputs of `launch_detached_process.log`. Access the project metadata folder from the project detail page to open this directory in the Files app when you need to review the content.
+- **Resolution**: Each user has a metadata directory (configured via `metadata_root`, `~/.loop_metadata` by default) that holds Loop’s internal state as well as log outputs of `launch_detached_process.log`. Access the project metadata folder from the project detail page to open this directory in the Files app when you need to review this content. Apart from that, nginx application logs for this user are located in `/var/log/ondemand-nginx/<user>/error.log` and the global logs for Apache in `/var/log/httpd/`.
