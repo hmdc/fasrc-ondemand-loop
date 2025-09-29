@@ -17,7 +17,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [How can I copy or move my downloaded files into my shared folder?](#how-can-i-copy-or-move-my-downloaded-files-into-my-shared-folder)
   - [Download is stuck in the Downloading state](#download-is-stuck-in-the-downloading-state)
   - [Download shows an error status](#download-shows-an-error-status)
-  - [Downloads fail because storage is full](#downloads-fail-because-storage-is-full)
+  - [Downloads fail because storage is full](#new-downloads-fail-because-storage-is-full)
   - [What happens if I download the same file twice?](#what-happens-if-i-download-the-same-file-twice)
   - [Restarting a cancelled or failed download](#restarting-a-cancelled-or-failed-download)
 - [Uploads](#uploads)
@@ -36,7 +36,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [Repository compatibility issues](#repository-compatibility-issues)
 - [Others](#others)
   - [Automatic sync is not available](#automatic-sync-is-not-available)  
-  - [Transfers never start processing](#transfers-never-start-processing)
+  - [Transfers never start processing](#transfers-stuck-in-pending-state)
   - [How to start the detached process](#how-to-start-the-detached-process)
   - [Where are the log files located?](#where-are-the-log-files-located)
 
