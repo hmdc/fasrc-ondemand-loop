@@ -25,6 +25,7 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [Uploading large files is blocked](#uploading-large-files-is-blocked)
   - [How do I navigate to the remote repository where my files are uploaded?](#how-do-i-navigate-to-the-remote-repository-where-my-files-are-uploaded)
   - [Restarting a cancelled or failed upload](#restarting-a-cancelled-or-failed-upload)
+  - [Drag and drop does not work for uploads](#drag-and-drop-does-not-work-for-uploads)
 - [Exploring data](#exploring-data)
   - [Cannot access a draft dataset](#cannot-access-a-draft-dataset)
   - [Need to explore a previous dataset version](#need-to-explore-a-previous-dataset-version)
@@ -33,14 +34,10 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [Update or delete a saved repository API key](#update-or-delete-a-saved-repository-api-key)
   - [DOI or dataset URL does not work in the Explore bar](#doi-or-dataset-url-does-not-work-in-the-explore-bar)
   - [Repository compatibility issues](#repository-compatibility-issues)
-- [Accessibility](#accessibility)
-  - [Keyboard navigation and accessibility](#keyboard-navigation-and-accessibility)
-  - [Drag and drop does not work for uploads](#drag-and-drop-does-not-work-for-uploads)
 - [Others](#others)
-  - [Automatic sync is not available](#automatic-sync-is-not-available)
-  - [Critical outage caused by infrastructure or environment](#critical-outage-caused-by-infrastructure-or-environment)
-  - [Restarting a cancelled or failed transfer](#restarting-a-cancelled-or-failed-transfer)
+  - [Automatic sync is not available](#automatic-sync-is-not-available)  
   - [Transfers never start processing](#transfers-never-start-processing)
+  - [How to start the detached process](#how-to-start-the-detached-process)
   - [Where are the log files located?](#where-are-the-log-files-located)
 
 ## Projects
@@ -136,6 +133,10 @@ Possible reasons for this error are network connectivity issues, MD5 checksum ve
 - **Symptoms**: A user cancels a upload, or it fails with an error, and they expect an automatic retry that it is not happening.
 - **Resolution**: Loop does not automatically retry failed uploads. User needs to click on the **Retry** button on the file row. Alternatively, users can create a new upload for the same file to repeat the process. Review the event logs on the file to understand the failure reason.
 
+### Drag and drop does not work for uploads
+- **Symptoms**: Dragging files from the file browser into the upload drop zone doesn't work.
+- **Resolution**: There might be a Javascript issue or a browser incompatibility for the drag&drop feature. Advise the user to double-click files in the file browser to select them or rely on keyboard navigation, both of which are fully supported alternatives.
+- **Escalation**: Request the information about the browser and create an issue at `https://github.com/IQSS/ondemand-loop/issues`.
 
 ## Exploring data
 
@@ -166,22 +167,20 @@ Review related Upload Bundles to update the required locally-stored API keys.
 
 ### DOI or dataset URL does not work in the Explore bar
 - **Symptoms**: Pasting a DOI or dataset URL results in an error message. The user may be unsure which formats are accepted.
-- **Resolution**: Confirm the identifier matches a supported format (for example, `doi:10.7910/DVN/MYSRMN`, `https://doi.org/10.7910/DVN/MYSRMN`, `doi:10.5281/zenodo.4884775`, `https://doi.org/10.5281/zenodo.4884775`, or a full HTTPS dataset URL like `https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FMYSRMN&version=1.0`). Ensure that this DOI is linked to a supported dataset and that the repository is supported and accessible from the current environment. You can check that the DOI is linked to a valid repository on the section **Try resolving a DOI name** of `https://www.doi.org` website. If the dataset is draft, ensure you add the required API key before retrying.
-- **Escalation**: Collect the full identifier and any console errors if supported formats still fail.
+- **Resolution**: Confirm the identifier matches a supported format:
+  - `doi:10.7910/DVN/MYSRMN`, 
+  - `10.5281/zenodo.4884775`, 
+  - `https://doi.org/10.7910/DVN/MYSRMN`, 
+  - `https://doi.org/10.5281/zenodo.4884775`, 
+  - `https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FMYSRMN&version=1.0`. 
+  Ensure that this DOI links to a dataset in one of the supported repositories. You can use the `https://www.doi.org` website to resolve the DOI. 
+- **Escalation**: If DOI is linked to a supported repository and fails, create an OnDemand Loop issue at `https://github.com/IQSS/ondemand-loop/issues`.
 
 ### Repository compatibility issues
-- **Symptoms**: Users can authenticate to a Dataverse installation, but searches, downloads, or uploads fail immediately with connector errors. Alternatively, selecting a Dataverse installation fails or shows incomplete results. Search requests time out or return API compatibility errors.
-- **Resolution**: Loop is validated against recent Dataverse releases. Deployments that predate the 6.x series (for example, 4.20 or 5.x) are only partially supported and may break core operations. Confirm the Dataverse version with the repository administrator. If it falls in the “Partial Support” or “Testing Pending” range, document the failure, collect API responses if possible, and escalate to the Loop team. 
-
-## Accessibility
-
-### Keyboard navigation and accessibility
-- **Symptoms**: Users rely on keyboard navigation or assistive technologies and want to interact without a mouse. They are unsure whether the upload file selector supports keyboard controls.
-- **Resolution**: The file selector supports keyboard navigation for browsing directories and staging files. Users can select entries using arrow and tab keys and activate them with Enter instead of drag and drop.
-
-### Drag and drop does not work for uploads
-- **Symptoms**: Dragging files into the upload drop zone does nothing. The user may be on a browser that restricts drag-and-drop events.
-- **Resolution**: Advise the user to double-click files in the selector to stage them or rely on keyboard navigation, both of which are fully supported alternatives.
+- **Symptoms**: Users reports missing data, missing pagination and errors when browsing a Dataverse collection or dataset. 
+- **Resolution**: Loop uses the Dataverse API to get collection and dataset information. The application has been developed using recent versions of Dataverse, 6.x series. Support for previous versions is limited or non-existant. See `https://iqss.github.io/ondemand-loop/user_guide/supported_repositories/`.
+For Dataverse versions with limited support, this behaviour is expected. To validate the version use the url `https://<server_hostname>/api/info/version` endpoint.
+- **Escalation**: If you want to support this Dataverse version, create an issue at `https://github.com/IQSS/ondemand-loop/issues`.
 
 ## Others
 
@@ -189,19 +188,15 @@ Review related Upload Bundles to update the required locally-stored API keys.
 - **Symptoms**: The user asks how to keep a project in sync with a remote repository automatically, or they report that new revisions never appear locally unless they take manual action.
 - **Resolution**: Explain that OnDemand Loop performs discrete transfers only. Each upload or download must be triggered manually. Downloads and uploads must be re-queued whenever content changes; there is no background synchronization process. 
 
-### Critical outage caused by infrastructure or environment
-- **Symptoms**: The UI loads but project creation fails, existing projects disappear, or downloads/uploads never start. Background job status indicators stay idle despite queued work.
-- **Diagnosis**: Loop stores its state on disk. If the metadata directory becomes unavailable or read-only, the application cannot persist project definitions, repository settings, or transfer queues. Similarly, if the download workspace is missing, newly scheduled downloads will fail immediately.
-- **Resolution**: Verify that the paths configured for `metadata_root` and `download_root` exist and are writable by the affected user account (they are usually `~/.loop_metadata` and `~/loop_downloads` directories). Restore the storage mount or adjust filesystem permissions as needed. Restart the Loop Passenger app after the storage is restored so cached configuration is reloaded. Ask the user to refresh the browser and retry the action. If the directories were deleted, recreate them and copy any available backups of the `~/.loop_metadata` tree before restarting services.
+### Transfers stuck in pending state
+- **Symptoms**: Download or Upload files stay in `pending` state and the progress bar never appears.
+- **Resolution**: This is likely that the detached process is failing to run. The detached proccess is executed automatically by the front-end using AJAX requests. To trigger the detached process again load any page of the application.
+- **Escalation**: If the problem persists, look at the detached proccess log file and investigate the cause of the error. 
 
-### Restarting a cancelled or failed transfer
-- **Symptoms**: A user cancels a download or upload, or it fails with an error, and they want to retry it. They expect an automatic retry button but cannot find one.
-- **Resolution**: Loop does not automatically retry failed transfers. User needs to click on the **Retry** button on the file row. Alternatively, you can start another download or upload to repeat the process. Review the **Events** log on the file to understand the failure reason before retrying.
-
-### Transfers never start processing
-- **Symptoms**: Files stay in `pending  ` state and the progress bar never appears. The header on the Downloads or Uploads page shows a paused status.
-- **Resolution**: Check the **Job Status** icon on the left of the global Downloads or Uploads pages. A pause icon indicates that no background worker is running. If paused, an administrator should restart the Loop application or background job service so transfers can resume. Verify that the metadata and download directories are writable. Check the lock file `~/.loop_metadata/detached.process.lock` which is necesary to only run a transfer process (The lock file location is described in the Admin Guide with the env variable `OOD_LOOP_DETACHED_PROCESS_FILE`). Try to delete that file to see if the transfer process starts again.
+### How to start the detached process
+- **Symptoms**: Support staff wants to start the detached process to start transferring the files.
+- **Resolution**: The detached proccess is executed automatically by the front-end using AJAX requests. To trigger the detached process again load any page of the application. Using the browser web console on the network traffic there will be requests to the detached process status controller `https://<server_hostname>/pun/sys/loop/detached_process/status`. Every time this request is processed the detached process is executed.
 
 ### Where are the log files located?
 - **Symptoms**: Support staff need to inspect Loop logs but are unsure where the application writes them for a given user.
-- **Resolution**: Each user has a metadata directory (configured via `metadata_root`, `~/.loop_metadata` by default) that holds Loop’s internal state as well as log outputs of `launch_detached_process.log`. Access the project metadata folder from the project detail page to open this directory in the Files app when you need to review this content. Apart from that, nginx application logs for this user are located in `/var/log/ondemand-nginx/<user>/error.log` and the global logs for Apache in `/var/log/httpd/`.
+- **Resolution**: Each user has a metadata directory (configured via `metadata_root` property, `~/.loop_metadata` by default) that holds Loop’s internal state as well as log outputs of the detached procees: `launch_detached_process.log`. The main Rails logging file is located under `/var/log/ondemand-nginx/<user>/error.log`.
