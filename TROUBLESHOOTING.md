@@ -80,21 +80,21 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Symptoms**: After downloading data, the user wants to copy/move the files into a shared directory but does not see a copy/move option inside Loop.
 - **Resolution**: If the user wants to use the shared folder as the project workspace, use the pencil button on the **Downloads** tab on the project detail view to change the project folder. All files downloaded onto that project will be moved automatically from the previous folder into the new one. 
 
-If the user wants to copy/move files to the shared folder but continue working on the same Loop workspace, use the Open OnDemand Files application. To open the Files application use the folder button in the **Downloads** tab in the project detail view. Select the files you want to copy, click on Copy/Move, go to the target location and click on the Copy/Move button.
+  If the user wants to copy/move files to the shared folder but continue working on the same Loop workspace, use the Open OnDemand Files application. To open the Files application use the folder button in the **Downloads** tab in the project detail view. Select the files you want to copy, click on Copy/Move, go to the target location and click on the Copy/Move button.
 - **Escalation**: If the user cannot reach the target shared directory, confirm the user’s filesystem permissions or disk quotas.
 
 ### Download is stuck in the Downloading state
 - **Symptoms**: A download file shows `Downloading` indefinitely in the **Downloads** page, even after refreshing it. The system continues to download other files, but the affected file never changes the status. 
 - **Resolution**: This could happen if the detached process aborts or the server is shutdown while a file is being downloaded. The file keeps the `downloading` status. On the next detached process start-up, it will only process files in `pending` state. Any other state is ignored, including `downloading`. This scenario is logged in the DownloadService.
 
-To fix the issue ask the user to cancel the download file using the cancel button in the **Downloads** page and use the retry functionality. 
+  To fix the issue ask the user to cancel the download file using the cancel button in the **Downloads** page and use the retry functionality. 
 - **Escalation**: If this problem becomes a common occurrance, further investigation will be required to understand why the detached process is failing so often. 
 
 ### Download shows an error status
 - **Symptoms**: A download displays an `error` badge. The user is unsure what to do next.
 - **Resolution**: As a first step, tell the user to retry the download. 
 
-Possible reasons for this error are network connectivity issues, MD5 checksum verification failures, authentication errors on private data downloads or disk space. If the problem persists after retries, check the file event logs in the application to get further information
+    Possible reasons for this error are network connectivity issues, MD5 checksum verification failures, authentication errors on private data downloads or disk space. If the problem persists after retries, check the file event logs in the application to get further information
 - **Escalation**: If the problem relates to disk space, ask the user to change the project workspace location. 
 If the problem relates to authentication, ask the user to provide the appropriate API key for the related repository. This might solve the issue.
 
@@ -117,7 +117,7 @@ If the problem relates to authentication, ask the user to provide the appropriat
 - **Symptoms**: A upload displays an `error` badge. The user is unsure what to do next.
 - **Resolution**: As a first step, tell the user to retry the upload. 
 
-Possible reasons for this error are network connectivity issues, MD5 checksum verification failures or authentication errors. If the problem persists after retries, check the file event logs in the application to get further information
+  Possible reasons for this error are network connectivity issues, MD5 checksum verification failures or authentication errors. If the problem persists after retries, check the file event logs in the application to get further information
 - **Escalation**: If the problem relates to authentication, ask the user to provide the appropriate API key for the related repository in the **Repository Settings**. This might solve the issue.
 
 ### Uploading large files is blocked
@@ -173,6 +173,7 @@ Review related Upload Bundles to update the required locally-stored API keys.
   - `https://doi.org/10.7910/DVN/MYSRMN`, 
   - `https://doi.org/10.5281/zenodo.4884775`, 
   - `https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FMYSRMN&version=1.0`. 
+  
   Ensure that this DOI links to a dataset in one of the supported repositories. You can use the `https://www.doi.org` website to resolve the DOI. 
 - **Escalation**: If DOI is linked to a supported repository and fails, create an OnDemand Loop issue at `https://github.com/IQSS/ondemand-loop/issues`.
 
