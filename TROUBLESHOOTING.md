@@ -19,10 +19,13 @@ Each section focuses on a specific scenario, summarizing what the user is trying
   - [Download shows an error status](#download-shows-an-error-status)
   - [Downloads fail because storage is full](#downloads-fail-because-storage-is-full)
   - [What happens if I download the same file twice?](#what-happens-if-i-download-the-same-file-twice)
+  - [Restarting a cancelled or failed download](#restarting-a-cancelled-or-failed-download)
 - [Uploads](#uploads)
   - [Upload shows an error status](#upload-shows-an-error-status)
   - [Uploading large files is blocked](#uploading-large-files-is-blocked)
   - [How do I go back to the remote repository where my files are uploaded?](#how-do-i-go-back-to-the-remote-repository-where-my-files-are-uploaded)
+  - [Restarting a cancelled or failed upload](#restarting-a-cancelled-or-failed-upload)
+  - [Upload shows an error status](#upload-shows-an-error-status)
 - [Exploring data](#exploring-data)
   - [Cannot access a draft dataset](#cannot-access-a-draft-dataset)
   - [Need to explore a previous dataset version](#need-to-explore-a-previous-dataset-version)
@@ -86,73 +89,85 @@ If the user wants to copy/move files to the shared folder but continue working o
 - **Escalation**: If the user cannot reach the target shared directory, confirm the user’s filesystem permissions or disk quotas.
 
 ### Download is stuck in the Downloading state
-- **Symptoms**: A transfer shows `Downloading` indefinitely, even after refreshing the page. Subsequent page reloads do not resume the file.
-- **Resolution**: This could happen if the detached process aborts or the servers is shutdown while a file is being downloaded. On the next detached process start-up, it will ignore the files in downloading state. This is why we logged the zombie files in the DownloadService/UploadService. 
-Open the project metadata folder from the project detail page and inspect the `download_files` manifests inside `.loop_metadata/projects/<project>/` to locate the stuck entry. Delete the stale manifest or edit it to set the status back to `pending`, then re-stage the file from the dataset so it re-enters the queue. After cleaning up, restart the detached process so the worker sees the refreshed queue.
-- **Escalation**: If zombie entries continue to appear after cleanup, collect the `launch_detached_process.log` and the stuck manifest file so engineering can confirm why the worker aborted mid-transfer.
+- **Symptoms**: A download file shows `Downloading` indefinitely in the **Downloads** page, even after refreshing it. The system continues to download other files, but the affected file never changes the status. 
+- **Resolution**: This could happen if the detached process aborts or the server is shutdown while a file is being downloaded. The file keeps the `downloading` status. On the next detached process start-up, it will only process files in `pending` state. Any other state is ignored, including `downloading`. This scenario is logged in the DownloadService.
+
+To fix the issue ask the user to cancel the download file using the cancel button in the **Downloads** page and use the retry functionality. 
+- **Escalation**: If this problem becomes a common occurrance, further investigation will be required to understand why the detached process is failing so often. 
 
 ### Download shows an error status
-- **Symptoms**: A completed download displays an `error` badge even though the transfer appeared to finish. The user is unsure whether the file is usable.
-- **Resolution**: Downloads undergo checksum verification after transfer. A mismatch causes the file to be marked `error` and should be requeued so the data can be retrieved cleanly. Other kind of errors are also reported in this status badge. Click on the status badge for this file in the Downloads view to see the file events and get more details of the error.
-- **Escalation**: browse the project metadata yml file for this download file to get more details. Complete that information with the file events displayed when you click on the status badge.
+- **Symptoms**: A download displays an `error` badge. The user is unsure what to do next.
+- **Resolution**: As a first step, tell the user to retry the download. 
 
-### Downloads fail because storage is full
-- **Symptoms**: New downloads immediately error with filesystem quota or disk space messages. Existing project data fills the workspace.
-- **Resolution**: Downloaded files remain in the project directory until manually removed. Update the project directory to point to a lab shared folder to get more disk space as personal space is limited in FASRC cluster. If user still need to use the original directory, free disk space by deleting unneeded files via the OnDemand Files app or archive data elsewhere before retrying the download.
+Possible reasons for this error are network connectivity issues, MD5 checksum verification failures, authentication errors on private data downloads or disk space. If the problem persists after retries, check the file event logs in the application to get further information
+- **Escalation**: If the problem relates to disk space, ask the user to change the project workspace location. 
+If the problem relates to authentication, ask the user to provide the appropriate API key for the related repository. This might solve the issue.
+
+### New downloads fail because storage is full
+- **Symptoms**: Selecting files for download immediately display errors with filesystem quota or disk space messages.
+- **Resolution**: The application requires to write metadata on the user's home directory. If this directory become full, the application will not be able to schedule new files to download. Ask the user to free disk space on their home directory by deleting unneeded files.
 
 ### What happens if I download the same file twice?
 - **Symptoms**: Users worry that downloading a file again will overwrite the version already on disk.
 - **Resolution**: Loop automatically renames duplicate downloads by appending a numeric suffix (for example, `_01`, `_02`) so each transfer lands alongside the earlier version without overwriting it.
 
+### Restarting a cancelled or failed download
+- **Symptoms**: A user cancels a download, or it fails with an error, and they expect an automatic retry that it is not happening.
+- **Resolution**: Loop does not automatically retry failed downloads. User needs to click on the **Retry** button on the file row. Alternatively, users can create a new download for the same file to repeat the process. Review the event logs on the file to understand the failure reason.
+
+
 ## Uploads
 
 ### Upload shows an error status
-- **Symptoms**: An upload finishes but displays an `error` state in the bundle tab or global uploads page. The remote repository may or may not show the file.
-- **Resolution**: Loop verifies upload integrity (for example, Dataverse checksum validation). If verification fails, the status becomes `error`; restage the file and retry after confirming repository availability. Other kind of errors are also tracked and the details can be seen by clicking on the file status badge and exploring the file events. Also ensure that the API key for the target dataset repository is already set in **Repository Settings**
+- **Symptoms**: A upload displays an `error` badge. The user is unsure what to do next.
+- **Resolution**: As a first step, tell the user to retry the upload. 
+
+Possible reasons for this error are network connectivity issues, MD5 checksum verification failures or authentication errors. If the problem persists after retries, check the file event logs in the application to get further information
+- **Escalation**: If the problem relates to authentication, ask the user to provide the appropriate API key for the related repository in the **Repository Settings**. This might solve the issue.
 
 ### Uploading large files is blocked
-- **Symptoms**: Attempting to stage or upload a file above a certain size immediately fails. Error messages mention exceeding the configured limit.
-- **Resolution**: Loop enforces `max_upload_file_size` for uploads (1 GB by default) and `max_download_file_size` for downloads (10 GB by default). Files above those thresholds are rejected by design. Suggest splitting the data into smaller archives or asking an administrator to raise the configured limit if policy allows. After adjusting the configuration, restart the application so the new limits apply.
-- **Escalation**: If the file is under the documented limit yet still fails, collect the filename, reported size, and connector logs for debugging.
+- **Symptoms**: Attempting to select a file to upload above a certain size immediately fails. Error messages mention exceeding the configured limit.
+- **Resolution**: Loop enforces `max_upload_file_size` for uploads which is 1 GB by default. Suggest splitting the data into smaller archives if possible.
+- **Escalation**: `max_upload_file_size` can be updated by following the Admin Guide to suport larger files if required.
 
-### How do I go back to the remote repository where my files are uploaded?
-- **Symptoms**: After sending files to a dataset, the user wants to verify them on the remote repository but cannot find a direct link from Loop.
-- **Resolution**: Open the project’s upload bundle. There you will see some links to the Dataverse installation, the collection containing the dataset and the target dataset. By clicking on any of these links you can go to the remote resource where the files are uploaded. The kind of links will be slightly different for Zenodo datasets, but with the same purpose. 
-- **Escalation**: If the link is missing or leads to an error, confirm the dataset URL saved in the upload bundle and coordinate with the repository administrator to ensure the dataset still exists.
+### How do I navigate to the remote repository where my files are uploaded?
+- **Symptoms**: After uploading files to a dataset, the user wants to verify them on the remote repository but cannot find a direct link from Loop.
+- **Resolution**: Open the upload bundle tab used to upload the file on the project detail view. In the repository actions bar identified by the plug icon, there you will see the description of the remote dataset where the files have been uploaded. This description links back to the remote dataset. 
+
+### Restarting a cancelled or failed upload
+- **Symptoms**: A user cancels a upload, or it fails with an error, and they expect an automatic retry that it is not happening.
+- **Resolution**: Loop does not automatically retry failed uploads. User needs to click on the **Retry** button on the file row. Alternatively, users can create a new upload for the same file to repeat the process. Review the event logs on the file to understand the failure reason.
+
 
 ## Exploring data
 
 ### Cannot access a draft dataset
-- **Symptoms**: A user reports that a Dataverse or Zenodo dataset loads without any files or metadata when they know a draft exists. The interface may show a warning about restricted content, or the dataset listing remains empty.
-- **Resolution**: Confirm that the dataset version is `draft`. Draft versions require credentials even if the published dataset is public. Ask the user to open **Repositories → Settings** and add a valid API token for the affected repository. Tokens saved there automatically apply to browsing and downloads. After saving the key, have the user reload the dataset from the **Explore** bar. The draft files should now appear.
-- **Escalation**: If a valid API key is present but the draft still fails to load, capture the repository version and escalate as a connector bug. Ensure that the user associated to that API key has permissions to explore that dataset. 
+- **Symptoms**: A user reports that exploring a draft dataset shows an authorization error message.
+- **Resolution**: Confirm that the dataset version is `draft`. Draft versions require API keys even if the published dataset is public. Ask the user to open **Repositories → Settings** and add a valid API key for the affected repository. API keys saved there automatically apply to browsing and downloads.
+- **Escalation**: If an API key is present but the error message still shows, ensure that API key has permissions to explore that dataset. 
 
 ### Need to explore a previous dataset version
-- **Symptoms**: A user wants to review an earlier snapshot of a dataset but Loop only shows the latest content. They may not realize that Dataverse exposes version controls inside Loop.
-- **Resolution**: Load the dataset via the **Explore** workflow. Use the dataset version selector in the sidebar to choose a published version or the current draft when available. Selecting a different version refreshes the metadata and file listing so the user can download historical files. Please note that Loop will only display the last 10 versions in the version selector but all versions can be explored in the Explore bar.
-- **Escalation**: If version options are missing entirely, verify the repository version and report incompatibilities to the Loop team.
+- **Symptoms**: A user wants to review an earlier version of a dataset but they don't know how.
+- **Resolution**: OnDemand Loop supports exploring multiple versions on a dataset. Load the dataset via the **Explore** workflow. Use the dataset version selector, the plus button on the right hand side of the dataset description section, to select another version. Please note that due to API restrictions, only the last 10 versions are displayed. 
 
 ### Quickly reopen frequently accessed datasets
 - **Symptoms**: The user repeatedly searches for the same dataset even though they recently explored it in Loop. They are unaware of a shortcut to reopen the dataset directly.
-- **Resolution**: Point them to the folder icon next to the **Explore** bar in the application header. Clicking it opens the **Repository Activity** dialog, which lists recently browsed datasets and collections. From the list, choose **Explore** to relaunch the dataset instantly or **Open Repository in website** to jump back to the remote site.
+- **Resolution**: Point them to the folder icon next in the the Explore bar next to the **Explore** button. Clicking it opens the **Repository Activity** dialog, which lists recently browsed datasets. From the list you can explore the datasets or open the remote repository website.
 
-### User doesn't know how to see all files on a dataset
-- **Symptoms**: Only the first batch of files is displayed when viewing a large dataset. Pagination controls show that more files exist, but the user is unsure how to load them.
-- **Resolution**: Explain that Loop paginates large file listings based on the configured default page size (20 items by default). Use the pagination controls in the file browser to load additional pages of files. For installations that regularly handle very large datasets, administrators can raise `default_pagination_items` so more files appear per page.
-- **Escalation**: If no pagination controls appear, gather the dataset identifier and repository version and escalate as a connector defect.
-
-### Dataverse API key authentication fails
-- **Symptoms**: Users receive repeated authentication prompts or error banners when adding a Dataverse API token. Draft datasets and private files remain inaccessible even after entering a key.
-- **Resolution**: Confirm that the token was copied without leading or trailing spaces and that it has not expired on the Dataverse server. Instruct the user to edit the repository entry under **Repositories → Settings** and re-enter the token, ensuring it is saved for future sessions. Ensure that the API key has rights to access the dataset they want to explore. 
-- **Escalation**: Capture the Dataverse version and error message for engineering review if authentication still fails against a supported release.
+### User doesn't know that datasets are paginated
+- **Symptoms**: Only the first batch of files is displayed when viewing datasets. Pagination controls show that more files exist, but the user is unaware of them.
+- **Resolution**: Explain that Loop paginates file listings based on the configured default page size (20 items by default). Use the pagination controls in the dataset explorer to load additional pages of files. 
+- **Escalation**: For installations that regularly handle very large datasets, administrators can raise `default_pagination_items` so more files appear per page.
 
 ### Update or delete a saved repository API key
 - **Symptoms**: A user needs to rotate credentials or remove repository access after leaving a project but cannot find where saved API keys live.
-- **Resolution**: Open **Repositories → Settings** to view every repository Loop has cached. From this page you can edit the existing API key value or delete the entire repository entry, which clears the stored credential and any connector-specific settings. Updating the key takes effect immediately—no restart is required. Take into account that Upload Bundles can optionally store API keys local to the bundle instead of globally, so, it is advised to review all related Upload Bundles after updating/removing the global API key for that repository, in case they need to be updated/deleted too to maintain consistency.
-- **Escalation**: If the UI refuses to save changes, capture a screenshot and collect the user’s `~/.loop_metadata/repos/repo_db.yml` file so engineering can validate the stored credentials format before filing a bug.
+- **Resolution**: API keys are stored globally in repository settings and locally in Upload Bundles. 
+Open **Repositories → Settings** to view every repository Loop has stored. From this page you can edit the existing API key value or delete the entire repository entry, which clears the stored credentials and any connector-specific settings. Updating the key takes effect immediately — no restart is required. 
+Review related Upload Bundles to update the required locally-stored API keys.
+- **Escalation**: Globally-stored API keys are stored in `~/.loop_metadata/repos/repo_db.yml` file. Upload Bundle's API keys are stored inside the upload bundle metadata file which is stored in `~/.loop_metadata/projects/<project-id>/upload_bundles/<upload-bundle-id>/metadata.yml`.
 
 ### DOI or dataset URL does not work in the Explore bar
-- **Symptoms**: Pasting a DOI or dataset URL results in an error banner or no action. The user may be unsure which formats are accepted.
+- **Symptoms**: Pasting a DOI or dataset URL results in an error message. The user may be unsure which formats are accepted.
 - **Resolution**: Confirm the identifier matches a supported format (for example, `doi:10.7910/DVN/MYSRMN`, `https://doi.org/10.7910/DVN/MYSRMN`, `doi:10.5281/zenodo.4884775`, `https://doi.org/10.5281/zenodo.4884775`, or a full HTTPS dataset URL like `https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FMYSRMN&version=1.0`). Ensure that this DOI is linked to a supported dataset and that the repository is supported and accessible from the current environment. You can check that the DOI is linked to a valid repository on the section **Try resolving a DOI name** of `https://www.doi.org` website. If the dataset is draft, ensure you add the required API key before retrying.
 - **Escalation**: Collect the full identifier and any console errors if supported formats still fail.
 
