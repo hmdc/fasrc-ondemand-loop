@@ -65,6 +65,14 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Symptoms**: After upgrading Loop, a user reports that previously working projects show errors or stacktraces, or new downloads/uploads never start. Only some accounts are affected, typically ones that already had Loop metadata from a prior beta build.
 - **Resolution**: Use **Help → Reset Application** in the Loop navigation menu to wipe the metadata folder for the user. This action is safe but cannot be undone. If the reset dialog is unavailable or the problem persists, instruct the user to manually remove their metadata directory `~/.loop_metadata`. The Projects section on the User Guide describes the purpose of these folders so users understand what will be cleared. Have the user recreate their projects and re-download the files if necessary.
 
+### Beta regression requiring a factory reset
+- **Symptoms**: After upgrading Loop, a user reports that previously working projects show errors or stacktraces, or new downloads/uploads never start. Only some accounts are affected, typically ones that already had Loop metadata from a prior beta build.
+- **Resolution**: Use **Help → Reset Application** in the Loop navigation menu to wipe the metadata folder for the user. This action is safe but cannot be undone.
+  - The **Reset** action is only enabled if there are no active or pending downloads/uploads. Any such files must either be allowed to complete or be manually deleted before a reset can be performed.
+  - If the reset dialog is unavailable or the problem persists, instruct the user to manually remove their metadata directory `~/.loop_metadata`.
+  - The *Projects* section in the User Guide describes the purpose of these folders so users understand what will be cleared.
+  - After resetting, the user will need to recreate their projects and re-download files if necessary.
+
 ## Downloads
 
 ### Files are greyed out and cannot be downloaded
