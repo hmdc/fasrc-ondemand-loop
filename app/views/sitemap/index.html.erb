@@ -1,0 +1,9 @@
+<% content_for :title, t('.page_title') %>
+<div class="container-md content" role="main">
+  <%= render partial: '/shared/breadcrumbs', locals: { links: [{text: t('.breadcrumbs_text')}]} %>
+  <ul>
+    <%= render partial: 'navigation_items', locals: { nav_items: @navigation.select(&:lhs?) } %>
+    <%= render partial: 'navigation_items', locals: { nav_items: @navigation.select(&:rhs?) } %>
+  </ul>
+</div>
+
