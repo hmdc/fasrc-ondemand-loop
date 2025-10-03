@@ -16,7 +16,7 @@ Follow the steps below to prepare a deployment build of OnDemand Loop.
       ```
       Deployment Build: version: v0.5.13+2025-07-01
       ```
-    - Assign at least one maintainer to this issue.
+    - Add at least one assignee to this issue.
     - Add the label `deployment_build`
 
 2. **Create a QA deployment build**
@@ -40,6 +40,7 @@ Follow the steps below to prepare a deployment build of OnDemand Loop.
       ```
     - Creates a GitHub release based on the `VERSION` file.
     - Pushes the same version to a new production branch (e.g., `iqss_production_<version>`).
+    - For beta releases we have been doing minor releases.
 
 5. **Mark release as deployed**
     - Once the production deployment is completed and verified (via external system like Puppet), mark the release as deployed by commenting:
@@ -55,4 +56,4 @@ Follow the steps below to prepare a deployment build of OnDemand Loop.
     - The workflow will comment with the result of the build publication and deployment marking, including a link to the workflow run.
     - Close this issue once the production deployment is complete and verified.
 
-_Only authorized users can execute the slash commands above._
+_Only authorized users in `.github/workflows/slash_command_listener.yml` can execute the slash commands above._
