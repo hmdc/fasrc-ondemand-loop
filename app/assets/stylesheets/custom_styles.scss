@@ -1,0 +1,134 @@
+.files {
+  .custom-stripe {
+    background-color: #e9ecef;
+  }
+}
+
+div.creation-date span, span.creation-date {
+  font-size: 0.7rem;
+  cursor: default;
+}
+
+.icon-class {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.badge.file-status {
+  cursor: default;
+}
+
+.status-badge-button .badge.file-status {
+  cursor: pointer;
+}
+
+.btn-icon-sm {
+  padding: 0.25rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-project-muted {
+  background-color: #a1a8b0;
+  color: #212529;
+}
+
+.btn-project-muted {
+  background-color: #a1a8b0;
+  color: #212529;
+  border: 1px solid #949ba3;
+}
+
+.btn-project-muted:hover {
+  background-color: #949ba3;
+}
+
+.bg-project-warn {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.btn-project-warn {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+.btn-project-warn:hover {
+  background-color: #f1b0b7;
+}
+
+.bg-project-neutral {
+  background-color: #ced4da;
+  color: #212529;
+}
+
+.btn-project-neutral {
+  background-color: #ced4da;
+  color: #212529;
+  border: 1px solid #adb5bd;
+}
+.btn-project-neutral:hover {
+  background-color: #bfc6cd;
+}
+
+.btn-primary-dark {
+  background-color: #9ec5fe;
+  border: 1px solid #343a40;
+  color: #212529;
+}
+.btn-primary-dark:hover {
+  background-color: #7aa6ef;
+  border-color: #212529;
+  color: #16191b;
+}
+
+.btn-badge {
+  padding: 0.4rem 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.bg-light-darker {
+  background-color: #f1f3f5 !important;
+}
+
+.bg-light-grey {
+  color: #343a40;
+  background-color: #e9ecef;
+}
+
+.icon-hover-primary:hover {
+  color: #fff;
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.icon-hover-success:hover {
+  color: #fff;
+  background-color: var(--bs-success);
+  border-color: var(--bs-success);
+}
+
+.icon-hover-warning:hover {
+  color: var(--bs-emphasis-color);
+  background-color: var(--bs-warning);
+  border-color: var(--bs-warning);
+}
+
+.icon-hover-danger:hover {
+  color: #fff;
+  background-color: var(--bs-danger);
+  border-color: var(--bs-danger);
+}
+
+.cursor-default {
+  cursor: default !important;
+}
+
+.table-narrow-col {
+  width: 1%;
+  white-space: nowrap;
+}
