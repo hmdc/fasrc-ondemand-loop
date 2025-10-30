@@ -15,6 +15,9 @@ on:
       branch:
         required: true
         type: string
+      issue_number:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -28,6 +31,7 @@ jobs:
           echo "  - tag: ${{ inputs.tag }}"
           echo "  - environment: ${{ inputs.environment }}"
           echo "  - branch: ${{ inputs.branch }}"
+          echo "  - issue_number: ${{ inputs.issue_number }}"
 
       - name: Checkout Loop Tags
         uses: actions/checkout@v4
@@ -78,6 +82,13 @@ jobs:
       - name: Copy FASRC configuration
         run: |
           cp -R fasrc_config/config/fasrc/. target
+
+      - name: Create DEPLOYMENT file
+        working-directory: target
+        run: |
+          DEPLOYMENT_INFO="#${{ inputs.issue_number }}_${{ inputs.commit_hash }}_$(date -u +"%Y-%m-%dT%H:%MZ")"
+          echo "$DEPLOYMENT_INFO" > DEPLOYMENT
+          echo "Created DEPLOYMENT file with: $DEPLOYMENT_INFO"
 
       - name: List contents of target
         run: ls -la target/

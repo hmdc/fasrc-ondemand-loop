@@ -130,6 +130,7 @@ jobs:
       tag: ${{ needs.validate.outputs.tag }}
       environment: ${{ needs.validate.outputs.env }}
       branch: ${{ needs.branch_name.outputs.branch }}
+      issue_number: ${{ github.event.client_payload.github.payload.issue.number }}
 
   comment:
     name: Comment on completion
