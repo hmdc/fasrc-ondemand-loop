@@ -76,6 +76,10 @@ This repository:
 - `.github/workflows/` — Build and deployment automation workflows
 - `.github/scripts/` — Shared utility scripts for workflow logic
 - `config/fasrc` — FASRC-specific configuration
+- `docs/` — Troubleshooting guides and documentation
+  - `LOOP_TROUBLESHOOTING.md` — OnDemand Loop troubleshooting guide
+  - `OOD_DASHBOARD_TROUBLESHOOTING.md` — Open OnDemand troubleshooting guide
+  - Additional OOD troubleshooting documentation (coming soon)
 - `dv_external_tools/` — Static HTML landing page integrated with Harvard Dataverse
 
 ## Requirements
