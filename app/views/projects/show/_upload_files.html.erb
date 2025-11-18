@@ -1,0 +1,78 @@
+<% files = bundle.files %>
+<% list_id = local_assigns[:list_id] || "upload-bundle-#{bundle.id}-files" %>
+<% empty_id = local_assigns[:empty_id] || "upload-bundle-#{bundle.id}-files-empty" %>
+<ul id="<%= list_id %>" class="container files">
+  <% if files.empty? %>
+    <div class="row py-2 justify-content-center custom-stripe" id="<%= empty_id %>" role="alert">
+      <%= t('.message_no_upload_files_text') %>
+    </div>
+  <% end %>
+  <% files.each_with_index do |file, index| %>
+    <li class="row py-2 align-items-center <%= 'custom-stripe' if index.even? %>"
+        data-upload-file-id="<%= file.id %>">
+      <div class="col-md-10">
+        <div class="d-flex align-items-center">
+          <%= render partial: '/shared/file_row_date', locals: { date: file.creation_date, title: t('.field_schedule_date_title'), classes: 'mx-2'} %>
+
+          <span class="me-2"><%= file.filename %></span>
+          <small class="text-muted me-2"><%= number_to_human_size(file.size) %></small>
+        </div>
+
+      </div>
+
+      <div class="col-md-2 file-status d-flex justify-content-end gap-1">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+          <%= button_tag type: 'button',
+                         class: 'btn p-0 border-0 bg-transparent status-badge-button',
+                         title: t('.button_view_events_title'),
+                         data: {
+                           controller: 'modal',
+                           action: 'click->modal#load',
+                           'modal-url-value': widgets_path('events', project_id: bundle.project_id, entity_type: 'upload_file', entity_id: file.id),
+                           'modal-title-value': t('.button_view_events_title'),
+                           'modal-id-value': 'global-modal',
+                           'upload-file-id': file.id
+                         } do %>
+            <%= status_badge(file.status, title: file.end_date, filename: file.filename) %>
+            <span class="visually-hidden"><%= t('.button_view_events_label') %></span>
+          <% end %>
+          <% if file.status.success? %>
+            <span class="creation-date"><%= elapsed_string(file.start_date, file.end_date) %></span>
+          <% end %>
+        </div>
+
+        <%= render partial: '/shared/file_row_date', locals: { date: file.end_date, title: t('.field_completion_date_title'), classes: 'mx-2'} if file.end_date %>
+        <%= render partial: '/shared/file_row_date', locals: { date: file.start_date, title: t('.field_download_start_date_title'), classes: 'mx-2'} if file.status.downloading? %>
+
+        <% if retry_button_visible?(file) %>
+          <%= render layout: '/shared/button_to',
+             locals: {
+               url: retry_project_upload_bundle_upload_file_path(project_id: file.project_id, upload_bundle_id: file.upload_bundle_id, id: file.id),
+               method: :post,
+               icon: 'bi bi-arrow-clockwise',
+               class: 'btn-icon-sm btn-outline-secondary icon-hover-success',
+               title: t('.button_retry_upload_title')
+             } do %>
+              <%= hidden_field_tag :anchor, tab_anchor_for(bundle) %>
+          <% end %>
+        <% end %>
+
+        <%= render layout: "shared/button_to", locals: {
+          url: project_upload_bundle_upload_file_path(project_id: bundle.project_id, upload_bundle_id: bundle.id, id: file.id),
+          method: 'DELETE',
+          title: t(".button_delete_file_title"),
+          class: 'btn-sm btn-outline-secondary icon-hover-danger',
+          icon: "bi bi-trash",
+          modal_id: 'modal-delete-confirmation',
+          modal_title: t('.modal_delete_confirmation_title'),
+          modal_subtitle: file.filename,
+          modal_content: t('.modal_delete_confirmation_content'),
+          button_id: "delete-upload-file-#{file.id}-btn"
+        } do %>
+          <%= hidden_field_tag :anchor, tab_anchor_for(bundle) %>
+        <% end %>
+
+      </div>
+    </li>
+  <% end %>
+</ul>
