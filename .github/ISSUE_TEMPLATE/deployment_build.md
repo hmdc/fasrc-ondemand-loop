@@ -27,7 +27,7 @@ Follow the steps below to prepare a deployment build of OnDemand Loop.
     - This builds the specified version and pushes it to the `iqss_qa` branch.
 
 3. **Test and approve**
-    - Test the deployment in the QA environment.
+    - [Test the deployment in the QA environment]([url](https://harvardwiki.atlassian.net/wiki/spaces/HMDC/pages/370870157/OnDemand+LOOP+at+FASRC#QA-Testing)).
     - When ready, approve the deployment by commenting:
       ```
       build approved
