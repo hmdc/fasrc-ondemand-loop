@@ -41,6 +41,7 @@ Follow the steps below to prepare a deployment build of OnDemand Loop.
     - Creates a GitHub release based on the `VERSION` file.
     - Pushes the same version to a new production branch (e.g., `iqss_production_<version>`).
     - For beta releases we have been doing minor releases.
+    - Coordinate with IQSS Ops to publish the deployment to production by editing the production puppet configuration for OOD to update the `git_revision` for the `loop` app to specify the branch name created by the deployment build action.
 
 5. **Mark release as deployed**
     - Once the production deployment is completed and verified (via external system like Puppet), mark the release as deployed by commenting:
