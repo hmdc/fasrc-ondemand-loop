@@ -1,0 +1,91 @@
+---
+en:
+  download_files:
+    file_not_found: "File: %{file_id} not found for project: %{project_id}"
+    file_in_progress: "File: %{filename} cannot be deleted while is being downloaded"
+    file_cancellation_error: "Could not cancel download for file: %{filename}"
+    file_cancellation_update_error: "Download cancelled: %{filename}, but status update failed. Try again"
+    file_cancellation_success: "Download cancelled for file: %{filename}"
+    file_deletion_success: "Download file deleted: %{filename}"
+    file_retry_success: "File has been moved back to the pending queue and will be downloaded again"
+    file_retry_error: "Could not move file back to the pending queue"
+    file_retry_invalid: "File with status %{status} cannot be moved back to the pending queue"
+  file_browser:
+    directory_forbidden: "You do not have permission to access this directory."
+  projects:
+    show:
+      project_not_found: "Project %{id} not found"
+    create:
+      project_created: "Project %{project_name} created. A random HPC-themed name was assigned — click the pencil icon to rename"
+      project_create_error: "Error generating the project: %{errors}"
+    update:
+      project_not_found: "Project %{id} not found"
+      project_updated_successfully: "Project updated: %{project_name}"
+      project_update_error: "Failed to update project: %{errors}"
+    set_active:
+      project_not_found: "Project %{id} not found"
+      project_is_now_the_active_project: "%{project_name} is now the active project."
+    destroy:
+      project_not_found: "Project %{id} not found"
+      project_deleted_successfully: "Project %{project_name} deleted successfully"
+  repo_resolver:
+    resolve:
+      blank_url_error: "Please provide repo URL"
+      url_not_supported: "URL not supported: %{input} points to %{url}"
+  repository_settings:
+    create:
+      message_invalid_request: "Please provide a repository URL"
+      message_invalid_url: "URL not supported: %{url}"
+      message_success: "Repository added: %{url} type: %{type}"
+    update:
+      message_not_found: "Repository %{domain} not found"
+    destroy:
+      message_not_found: "Repository %{domain} not found"
+      message_deleted: "Repository %{domain} (%{type}) deleted"
+  upload_bundles:
+    create:
+      invalid_project: "Invalid project id: %{id}"
+      invalid_repo: "URL not supported: %{url}"
+    edit:
+      invalid_parameters: "Invalid parameters project_id: %{project_id} upload_bundle_id: %{upload_bundle_id}"
+    update:
+      not_found: "Upload Bundle not found: %{upload_bundle_id}"
+      success: "Upload bundle updated: %{bundle_name}"
+      error: "Failed to update upload bundle: %{errors}"
+    destroy:
+      not_found: "Upload Bundle not found: %{upload_bundle_id}"
+      success: "Upload bundle deleted: %{bundle_name}"
+  upload_files:
+    bundle_not_found: "Upload bundle not found for project: %{project_id} bundle: %{upload_bundle_id}"
+    file_not_found: "File: %{file_id} not found for project: %{project_id}"
+    create:
+      invalid_file: "Invalid file in selection: %{filename} errors: %{errors}"
+      files_added: "%{count} files added from: %{path_folder}"
+      file_added: "File added: %{filename}"
+    destroy:
+      file_in_progress: "File: %{filename} cannot be deleted while is being uploaded"
+      upload_file_removed: "Upload file removed from bundle: %{filename}"
+    cancel:
+      file_cancellation_error: "Could not cancel upload for file: %{filename}"
+      file_cancellation_update_error: "Upload cancelled: %{filename}, but status update failed. Try again"
+      file_cancellation_success: "Upload cancelled for file: %{filename}"
+    retry:
+      file_retry_success: "File has been moved back to the pending queue and will be uploaded again."
+      file_retry_error: "Could not move file back to the pending queue"
+      file_retry_invalid: "File with status %{status} cannot be moved back to the pending queue"
+  explore:
+    show:
+      message_processor_error: "Error processing request for repository: %{connector_type} type: %{object_type} with id: %{object_id}"
+    create:
+      message_processor_error: "Error processing request for repository: %{connector_type} type: %{object_type} with id: %{object_id}"
+
+  connect:
+    show:
+      message_processor_error: "Error processing request for repository: %{connector_type} action: %{action}"
+    handle:
+      message_processor_error: "Error processing request for repository: %{connector_type} action: %{action}"
+
+  connector_resolver:
+    message_invalid_connector_type: "Invalid connector type: %{connector_type}"
+    message_invalid_repo_url: "Invalid repository URL %{repo_url}. Unable to verify repository type using the API"
+    message_repo_mismatch: "Invalid request. The repository %{repo_url} type %{repo_type} does not match the expected type: %{explore_type}"

@@ -1,0 +1,10 @@
+base_locale: en
+data:
+  read:
+    - config/locales/**/*.yml
+search:
+  paths:
+    - app
+ignore_unused:
+  - 'js.*'
+  - 'events.*'
