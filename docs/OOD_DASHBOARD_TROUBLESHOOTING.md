@@ -192,6 +192,75 @@ Each section focuses on a specific scenario, summarizing what the user is trying
 - **Symptoms**: Session moves from Queued to Failed without running.
 - **Resolution**: [To be developed]
 - **Escalation**: [To be developed]
+ 
+### I. Session fails within first minute or two
+- **Symptoms**: Session runs very briefly then fails.
+- **Resolution**: This can happen for a variety of reasons.  This solution is for just one of them.
+
+For a quick workaround, you may be able to uncheck the "Use Jupyterlab instead of Jupyter Notebook" checkbox when starting a new session.
+
+We discuss this issue a bit in our documentation at https://docs.rc.fas.harvard.edu/kb/vdi-apps/#articleTOC_7, [https://docs.rc.fas.harvard.edu/kb/vdi-apps/#articleTOC_7,] however your .bashrc file looks all right and you don't have a .condarc file.
+
+The .condarc file can be created as a result of creating Anaconda/Mamba environments and installing packages inside those environments.
+
+I took a look at one of your recent session's output.log files at
+/n/home10/stevenliu/.fasrcood/data/sys/dashboard/batch_connect/sys/Jupyter/output/ae5bd7bb-4fe7-46fa-8b4d-7fae5079b255/output.log
+and it looks like it gets stuck with the anyio package.
+"ImportError: cannot import name 'run_sync_in_worker_thread' from 'anyio' (/n/home10/stevenliu/.local/lib/python3.8/site-packages/anyio/__init__.py)"
+It looks like someone had a similar issue to you, which I found in a search, at https://trac.macports.org/ticket/69357 [https://trac.macports.org/ticket/69357].
+
+I believe that renaming your .local directory would allow you to run JupyterLab again. My suspicion is that there may be conflicts between the packages you have installed, which will end up in your .local directory. One way to avoid this issue and customize your experience with Jupyter is to create Anaconda environments, install your packages into those environments, and load the environment you want when using Jupyter. Jupyter calls these environments "kernels".
+
+To access Mamba environments from within Jupyter, those environments must have the ipykernel and nb_conda_kernels packages installed. Then when you start a new Jupyter session, those will be listed under Kernel -> Change Kernel in Jupyter.
+
+We discuss using mamba in some of our documentation. While it's titled for Python, it's relevant for any situation where you want to load an environment into which you've installed packages specific to your work.
+https://docs.rc.fas.harvard.edu/kb/python/ [https://docs.rc.fas.harvard.edu/kb/python/] [https://docs.rc.fas.harvard.edu/kb/python/ [https://docs.rc.fas.harvard.edu/kb/python/]]
+https://docs.rc.fas.harvard.edu/kb/python-package-installation/ [https://docs.rc.fas.harvard.edu/kb/python-package-installation/] [https://docs.rc.fas.harvard.edu/kb/python-package-installation/ [https://docs.rc.fas.harvard.edu/kb/python-package-installation/]]
+Harvard FAS Informatics has a tutorial about using mamba.
+https://informatics.fas.harvard.edu/resources/tutorials/installing-command-line-software-conda-mamba/ [https://informatics.fas.harvard.edu/resources/tutorials/installing-command-line-software-conda-mamba/] [https://informatics.fas.harvard.edu/resources/tutorials/installing-command-line-software-conda-mamba/ [https://informatics.fas.harvard.edu/resources/tutorials/installing-command-line-software-conda-mamba/]]
+And there's a Mamba user guide at https://mamba.readthedocs.io/en/latest/user_guide/mamba.html [https://mamba.readthedocs.io/en/latest/user_guide/mamba.html] [https://mamba.readthedocs.io/en/latest/user_guide/mamba.html [https://mamba.readthedocs.io/en/latest/user_guide/mamba.html]]
+Mamba is already installed on the cluster, but you'll need to load a relevant module to use it.
+We discuss modules at https://docs.rc.fas.harvard.edu/kb/modules-intro/ [https://docs.rc.fas.harvard.edu/kb/modules-intro/] [https://docs.rc.fas.harvard.edu/kb/modules-intro/ [https://docs.rc.fas.harvard.edu/kb/modules-intro/]]
+You can learn about what modules are available by using 'module spider [partial module name]' on the command line.
+
+For example 'module spider mamba' will give you a list of a few different Mambaforge modules you could load.
+elawrence@holylogin07 ~]$ module spider mamba
+-------------------------------------------------------
+Mambaforge:
+-------------------------------------------------------
+Description:
+Mamba Python Implementation
+Versions:
+Mambaforge/22.11.1-fasrc01
+Mambaforge/23.3.1-fasrc01
+Mambaforge/23.11.0-fasrc01
+
+If I wanted to load the newest one, I could do this
+elawrence@holylogin07 ~]$ module load Mambaforge/22.11.1-fasrc01
+[elawrence@holylogin07 ~]$ module list
+Currently Loaded Modules: 1) Mambaforge/22.11.1-fasrc01
+[elawrence@holylogin07 ~]$
+
+From there I can use mamba commands to create a new environment, including the packages I want to install with 'mamba create -n <ENV_NAME> <PACKAGES>', or just create the environment with 'mamba create -n <ENV_NAME>', activate (enter the environment) it with 'source activate <ENV_NAME>', and then install packages with 'mamba install <PKG_NAME>'.
+
+Do keep in mind that if you have several packages installed in your .local, or if you have Mamba environments with several packages, they can take up significant space in your home directory.
+You can check your home directory quota usage with
+quota .
+We discuss quota usage at https://docs.rc.fas.harvard.edu/kb/checking-quota-and-usage/ [https://docs.rc.fas.harvard.edu/kb/checking-quota-and-usage/] [https://docs.rc.fas.harvard.edu/kb/checking-quota-and-usage/ [https://docs.rc.fas.harvard.edu/kb/checking-quota-and-usage/]]
+and there's more information about how to find out what folders are taking the most space and how to clear up space at
+https://docs.rc.fas.harvard.edu/kb/home-directory-full/ [https://docs.rc.fas.harvard.edu/kb/home-directory-full/] [https://docs.rc.fas.harvard.edu/kb/home-directory-full/ [https://docs.rc.fas.harvard.edu/kb/home-directory-full/]]
+
+- **Escalation**: [To be developed]
+
+### II. Session fails within first minute or two
+- **Symptoms**: Session runs very briefly then fails.
+- **Resolution**: The user may not have specified enough time, memory, CPU, or some combination of the three.  The job should be resubmitted with more resources.
+- **Escalation**: [To be developed]
+
+### III. Session fails within first minute or two
+- **Symptoms**: Session runs very briefly then fails.
+- **Resolution**: [To be developed]
+- **Escalation**: [To be developed]
 
 ### VNC/noVNC window launches but fails to connect
 - **Symptoms**: VNC viewer opens but shows `Failed to connect to server` or connection error.
